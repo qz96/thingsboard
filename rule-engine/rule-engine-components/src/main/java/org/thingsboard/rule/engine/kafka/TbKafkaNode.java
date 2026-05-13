@@ -154,14 +154,28 @@ public class TbKafkaNode extends TbAbstractExternalNode {
 
     protected void publish(TbContext ctx, TbMsg msg, String topic, String key) {
         try {
+            String messageData = msg.getData();
+            // 使用 Jackson 检测并解析 JSON 字符串
+            try {
+                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                JsonNode node = mapper.readTree(messageData);
+                // 如果是纯字符串节点（被序列化的字符串），提取其值
+                if (node.isTextual()) {
+                    messageData = node.asText();
+                }
+            } catch (Exception e) {
+                // 不是有效的 JSON，使用原始数据
+                log.debug("[{}] Message is not JSON, using as-is for topic: {}", ctx.getSelfId(), topic);
+            }
+
             if (!addMetadataKeyValuesAsKafkaHeaders) {
-                //TODO: external system executor
-                producer.send(new ProducerRecord<>(topic, key, msg.getData()),
+                producer.send(new ProducerRecord<>(topic, key, messageData),
                         (metadata, e) -> processRecord(ctx, msg, metadata, e));
             } else {
                 Headers headers = new RecordHeaders();
-                msg.getMetaData().values().forEach((k, v) -> headers.add(new RecordHeader(TB_MSG_MD_PREFIX + k, v.getBytes(toBytesCharset))));
-                producer.send(new ProducerRecord<>(topic, null, null, key, msg.getData(), headers),
+                msg.getMetaData().values().forEach((k, v) ->
+                        headers.add(new RecordHeader(TB_MSG_MD_PREFIX + k, v.getBytes(toBytesCharset))));
+                producer.send(new ProducerRecord<>(topic, null, null, key, messageData, headers),
                         (metadata, e) -> processRecord(ctx, msg, metadata, e));
             }
         } catch (Exception e) {
