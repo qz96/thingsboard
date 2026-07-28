@@ -15,6 +15,7 @@
     limitations under the License.
 
 -->
+<ng-container *ngIf="authUser.authority !== authority.SYS_ADMIN">
 <div class="tb-title" translate>widgets.getting-started.get-started</div>
 <div class="tb-get-started-container">
   <mat-stepper #matStepper class="tb-get-started" orientation="vertical" [linear]="false"
@@ -100,8 +101,6 @@
             </div>
           </ng-template>
           <div [innerHTML]="'widgets.getting-started.tenant-admin.step1.content' | translate | safe: 'html'"></div>
-          <a mat-stroked-button color="primary" href="https://thingsboard.io/docs/getting-started-guides/helloworld/#step-1-provision-device" target="_blank">
-            <mat-icon>description</mat-icon>{{ 'widgets.getting-started.tenant-admin.step1.how-to-create-device' | translate }}</a>
         </mat-step>
         <mat-step [completed]="gettingStarted.maxSelectedIndex > 0">
           <ng-template matStepLabel>
@@ -148,8 +147,6 @@
                 "></tb-markdown>
           </div>
           <div [innerHTML]="'widgets.getting-started.tenant-admin.step2.content-after' | translate | safe: 'html'"></div>
-          <a mat-stroked-button color="primary" href="https://thingsboard.io/docs/getting-started-guides/helloworld/#step-2-connect-device" target="_blank">
-            <mat-icon>description</mat-icon>{{ 'widgets.getting-started.tenant-admin.step2.how-to-connect-device' | translate }}</a>
         </mat-step>
         <mat-step [completed]="gettingStarted.maxSelectedIndex > 1">
           <ng-template matStepLabel>
@@ -159,8 +156,6 @@
             </div>
           </ng-template>
           <div [innerHTML]="'widgets.getting-started.tenant-admin.step3.content' | translate | safe: 'html'"></div>
-          <a mat-stroked-button color="primary" href="https://thingsboard.io/docs/getting-started-guides/helloworld/#step-3-create-dashboard" target="_blank">
-            <mat-icon>description</mat-icon>{{ 'widgets.getting-started.tenant-admin.step3.how-to-create-dashboard' | translate }}</a>
         </mat-step>
         <mat-step [completed]="gettingStarted.maxSelectedIndex > 2">
           <ng-template matStepLabel>
@@ -170,8 +165,6 @@
             </div>
           </ng-template>
           <div [innerHTML]="'widgets.getting-started.tenant-admin.step4.content' | translate | safe: 'html'"></div>
-          <a mat-stroked-button color="primary" href="https://thingsboard.io/docs/getting-started-guides/helloworld/#step-4-configure-alarm-rules" target="_blank">
-            <mat-icon>description</mat-icon>{{ 'widgets.getting-started.tenant-admin.step4.how-to-configure-alarm-rules' | translate }}</a>
         </mat-step>
         <mat-step [completed]="gettingStarted.maxSelectedIndex > 3">
           <ng-template matStepLabel>
@@ -188,8 +181,6 @@
                     ```
                 "></tb-markdown>
           <div [innerHTML]="'widgets.getting-started.tenant-admin.step5.content-after' | translate | safe: 'html'"></div>
-          <a mat-stroked-button color="primary" href="https://thingsboard.io/docs/getting-started-guides/helloworld/#step-5-create-alarm" target="_blank">
-            <mat-icon>description</mat-icon>{{ 'widgets.getting-started.tenant-admin.step5.how-to-create-alarm' | translate }}</a>
         </mat-step>
         <mat-step [completed]="gettingStarted.maxSelectedIndex > 4">
           <ng-template matStepLabel>
@@ -199,14 +190,15 @@
             </div>
           </ng-template>
           <div [innerHTML]="'widgets.getting-started.tenant-admin.step6.content' | translate | safe: 'html'"></div>
-          <a mat-stroked-button color="primary" href="https://thingsboard.io/docs/getting-started-guides/helloworld/#step-7-assign-device-and-dashboard-to-customer" target="_blank">
-            <mat-icon>description</mat-icon>{{ 'widgets.getting-started.tenant-admin.step6.how-to-create-customer-and-assign-dashboard' | translate }}</a>
         </mat-step>
       </ng-template>
     </ng-container>
   </mat-stepper>
-  <div *ngIf="allCompleted" class="flex justify-center pt-6">
+  <div *ngIf="allCompleted" class="flex justify-center pt-6 gap-3">
+    <a mat-stroked-button color="primary" href="https://thingsboard.io/docs" target="_blank">
+      <mat-icon>description</mat-icon>{{ 'widgets.devices.view-docs' | translate }}</a>
     <button (click)="gettingStartedCompleted()" mat-flat-button color="primary">
       <mat-icon>rocket_launch</mat-icon>{{ 'widgets.getting-started.finish' | translate }}</button>
   </div>
 </div>
+</ng-container>

@@ -31,6 +31,7 @@ import { RelationDialogComponent } from '@home/components/relation/relation-dial
 import { AlarmTableHeaderComponent } from '@home/components/alarm/alarm-table-header.component';
 import { AlarmTableComponent } from '@home/components/alarm/alarm-table.component';
 import { AttributeTableComponent } from '@home/components/attribute/attribute-table.component';
+import { DeviceHistoricalTelemetryTableComponent } from '@home/components/attribute/device-historical-telemetry-table.component';
 import { AddAttributeDialogComponent } from '@home/components/attribute/add-attribute-dialog.component';
 import { EditAttributeValuePanelComponent } from '@home/components/attribute/edit-attribute-value-panel.component';
 import { DashboardComponent } from '@home/components/dashboard/dashboard.component';
@@ -233,6 +234,7 @@ import { ResourcesLibraryComponent } from "@home/components/resources/resources-
       AlarmAssigneePanelComponent,
       AlarmAssigneeSelectPanelComponent,
       AttributeTableComponent,
+      DeviceHistoricalTelemetryTableComponent,
       AddAttributeDialogComponent,
       EditAttributeValuePanelComponent,
       DeleteTimeseriesPanelComponent,
@@ -393,6 +395,7 @@ import { ResourcesLibraryComponent } from "@home/components/resources/resources-
     AlarmAssigneePanelComponent,
     AlarmAssigneeSelectPanelComponent,
     AttributeTableComponent,
+    DeviceHistoricalTelemetryTableComponent,
     AliasesEntitySelectComponent,
     AliasesEntityAutocompleteComponent,
     EntityAliasesDialogComponent,

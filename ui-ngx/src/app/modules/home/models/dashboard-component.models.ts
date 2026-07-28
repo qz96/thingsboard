@@ -43,6 +43,8 @@ import { UtilsService } from '@core/services/utils.service';
 import { TbPopoverComponent } from '@shared/components/popover.component';
 import { ComponentStyle, iconStyle, textStyle } from '@shared/models/widget-settings.models';
 import { TbContextMenuEvent } from '@shared/models/jquery-event.models';
+import { Authority } from '@shared/models/authority.enum';
+import { AuthUser } from '@shared/models/user.model';
 
 export interface WidgetsData {
   widgets: Array<Widget>;
@@ -77,6 +79,7 @@ export interface DashboardCallbacks {
 }
 
 export interface IDashboardComponent {
+  authUser: AuthUser;
   utils: UtilsService;
   gridsterOpts: GridsterConfig;
   gridster: GridsterComponent;
@@ -408,7 +411,14 @@ export class DashboardWidget implements GridsterItem, IDashboardWidget {
   }
 
   get desktopHide(): boolean {
-    return this.widgetLayout ? this.widgetLayout.desktopHide === true : false;
+    if (this.widgetLayout ? this.widgetLayout.desktopHide === true : false) {
+      return true;
+    }
+    if (this.widget.typeFullFqn === 'system.home_page_widgets.getting_started'
+        && this.dashboard.authUser?.authority === Authority.SYS_ADMIN) {
+      return true;
+    }
+    return false;
   }
 
   set gridsterItemComponent(item: GridsterItemComponentInterface) {

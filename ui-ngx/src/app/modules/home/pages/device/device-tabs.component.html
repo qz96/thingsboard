@@ -32,6 +32,13 @@
                       [entityName]="entity.name">
   </tb-attribute-table>
 </mat-tab>
+<mat-tab *ngIf="entity"
+         label="{{ 'attribute.historical-telemetry' | translate }}" #historicalTelemetryTab="matTab">
+  <tb-device-historical-telemetry-table [active]="historicalTelemetryTab.isActive"
+                                         [entityId]="entity.id"
+                                         [entityName]="entity.name">
+  </tb-device-historical-telemetry-table>
+</mat-tab>
 <mat-tab *ngIf="entity && authUser.authority === authorities.TENANT_ADMIN" 
          label="{{ 'entity.type-calculated-fields' | translate }}" #calculatedFieldsTab="matTab">
   <tb-calculated-fields-table [active]="calculatedFieldsTab.isActive" [entityId]="entity.id"/>
