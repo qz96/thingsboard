@@ -14,7 +14,7 @@
 /// limitations under the License.
 ///
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { AuthService } from '@core/auth/auth.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '@core/core.state';
@@ -24,7 +24,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Constants } from '@shared/models/constants';
 import { Router } from '@angular/router';
 import { OAuth2ClientLoginInfo } from '@shared/models/oauth2.models';
-import { validateEmail } from '@app/core/utils';
+import { environment as env } from '@env/environment';
+import { TranslateService } from '@ngx-translate/core';
+import { updateUserLang } from '@core/settings/settings.utils';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'tb-login',
@@ -34,22 +37,42 @@ import { validateEmail } from '@app/core/utils';
 export class LoginComponent extends PageComponent implements OnInit {
 
   passwordViolation = false;
+  currentLang: string;
+  languageList = env.supportedLangs;
 
   loginFormGroup = this.fb.group({
-    username: ['', [Validators.required, validateEmail]],
+    username: ['', [Validators.required]],
     password: ['']
   });
   oauth2Clients: Array<OAuth2ClientLoginInfo> = null;
 
+  private langDisplayNames: { [key: string]: string } = {
+    'zh_CN': '中文',
+    'en_US': 'English',
+    'zh_TW': '繁體中文'
+  };
+
   constructor(protected store: Store<AppState>,
               private authService: AuthService,
               public fb: UntypedFormBuilder,
-              private router: Router) {
+              private router: Router,
+              private translate: TranslateService,
+              @Inject(DOCUMENT) private document: Document) {
     super(store);
+    this.currentLang = this.translate.currentLang || env.defaultLang;
   }
 
   ngOnInit() {
     this.oauth2Clients = this.authService.oauth2Clients;
+  }
+
+  getLangDisplayName(lang: string): string {
+    return this.langDisplayNames[lang] || lang;
+  }
+
+  changeLanguage(lang: string): void {
+    this.currentLang = lang;
+    updateUserLang(this.translate, this.document, lang).subscribe();
   }
 
   login(): void {

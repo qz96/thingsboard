@@ -15,7 +15,21 @@
 # limitations under the License.
 #
 
-start-db.sh
+USE_BUILTIN_DB=false
+
+# Check if using external database (skip built-in PostgreSQL)
+if [ "${TB_USE_EXTERNAL_DB}" = "true" ]; then
+    echo "TB_USE_EXTERNAL_DB=true, skipping built-in PostgreSQL."
+else
+    # Auto-detect: if datasource URL doesn't point to localhost, skip built-in DB
+    ds_url="${SPRING_DATASOURCE_URL:-jdbc:postgresql://localhost:5432/thingsboard}"
+    if echo "$ds_url" | grep -qv "localhost\|127.0.0.1"; then
+        echo "Datasource URL points to external host ($ds_url), skipping built-in PostgreSQL."
+    else
+        USE_BUILTIN_DB=true
+        start-db.sh
+    fi
+fi
 
 CONF_FOLDER="${pkg.installFolder}/conf"
 jarfile=${pkg.installFolder}/bin/${pkg.name}.jar
@@ -39,4 +53,6 @@ else
     echo "ERROR: ThingsBoard is not installed"
 fi
 
-stop-db.sh
+if [ "$USE_BUILTIN_DB" = "true" ]; then
+    stop-db.sh
+fi
