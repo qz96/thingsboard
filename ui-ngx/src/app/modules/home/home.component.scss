@@ -24,11 +24,14 @@
   }
   mat-sidenav.tb-site-sidenav {
     width: 250px;
+    height: 100%;
     background: linear-gradient(180deg, #4A90D9 0%, #3A7AC9 100%);
     border-right: none;
     box-shadow: 4px 0 20px rgba(74, 144, 217, 0.3);
     border-radius: 0 24px 24px 0;
     margin-right: 8px;
+    display: flex;
+    flex-direction: column;
 
     @media (max-width:456px) {
       width: calc(100% - 56px);
@@ -43,7 +46,6 @@
 
       .tb-nav-header-toolbar {
         min-height: 72px;
-        height: inherit;
         padding: 0;
         z-index: 2;
         flex-shrink: 0;
@@ -66,8 +68,9 @@
     }
 
     .tb-side-menu-toolbar {
+      flex: 1;
+      min-height: 0;
       overflow-y: auto;
-      height: inherit;
       padding: 16px 8px;
       background: transparent !important;
     }
