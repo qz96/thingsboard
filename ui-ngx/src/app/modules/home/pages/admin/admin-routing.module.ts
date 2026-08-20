@@ -47,6 +47,7 @@ import { MenuId } from '@core/services/menu.models';
 import { catchError } from 'rxjs/operators';
 import { JsLibraryTableConfigResolver } from '@home/pages/admin/resource/js-library-table-config.resolver';
 import { TrendzSettingsComponent } from '@home/pages/admin/trendz-settings.component';
+import { RuleChainSyncComponent } from '@home/pages/admin/rule-chain-sync.component';
 import { aiModelRoutes } from '@home/pages/ai-model/ai-model-routing.module';
 
 export const scadaSymbolResolver: ResolveFn<ScadaSymbolData> =
@@ -360,6 +361,17 @@ const routes: Routes = [
           title: 'admin.trendz-settings',
           breadcrumb: {
             menuId: MenuId.trendz_settings
+          }
+        }
+      },
+      {
+        path: 'rule-chain-sync',
+        component: RuleChainSyncComponent,
+        data: {
+          auth: [Authority.SYS_ADMIN],
+          title: 'admin.rule-chain-sync',
+          breadcrumb: {
+            menuId: MenuId.rule_chain_sync
           }
         }
       },

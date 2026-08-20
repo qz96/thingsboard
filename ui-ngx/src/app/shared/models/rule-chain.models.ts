@@ -93,3 +93,44 @@ export enum RuleChainType {
   CORE = 'CORE',
   EDGE = 'EDGE'
 }
+
+export enum TenantSyncStatus {
+  CREATED = 'CREATED',
+  UPDATED = 'UPDATED',
+  SKIPPED = 'SKIPPED',
+  FAILED = 'FAILED'
+}
+
+export enum MissingTargetStrategy {
+  CREATE = 'CREATE',
+  SKIP = 'SKIP'
+}
+
+export interface SyncRuleChainRequest {
+  sourceTenantId: string;
+  sourceRuleChainId?: string;
+  sourceRuleChainName?: string;
+  ruleChainType?: string;
+  missingTargetStrategy?: MissingTargetStrategy;
+  dryRun?: boolean;
+}
+
+export interface TenantSyncDetail {
+  tenantId: string;
+  tenantName?: string;
+  status: TenantSyncStatus;
+  targetRuleChainId?: string;
+  message?: string;
+}
+
+export interface SyncRuleChainResult {
+  sourceSelfContained?: boolean;
+  message?: string;
+  totalTenants?: number;
+  created?: number;
+  updated?: number;
+  skipped?: number;
+  failed?: number;
+  tenants?: Array<TenantSyncDetail>;
+}
+

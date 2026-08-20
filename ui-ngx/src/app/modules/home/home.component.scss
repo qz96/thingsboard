@@ -95,23 +95,6 @@
       }
     }
 
-    tb-github-badge {
-      ::ng-deep {
-        .mat-mdc-outlined-button {
-          color: #1A365D;
-          border-color: #1A365D;
-
-          .mat-icon {
-            color: #1A365D;
-          }
-        }
-
-        .button-label {
-          --mat-divider-color: #1A365D;
-        }
-      }
-    }
-
     tb-notification-bell {
       ::ng-deep {
         .mat-mdc-icon-button {

@@ -34,6 +34,7 @@ import {
 import { EntitiesVersionControlService } from '@core/http/entities-version-control.service';
 import { tap } from 'rxjs/operators';
 import { LoginResponse } from '@shared/models/login.models';
+import { SyncRuleChainRequest, SyncRuleChainResult } from '@shared/models/rule-chain.models';
 
 @Injectable({
   providedIn: 'root'
@@ -72,6 +73,10 @@ export class AdminService {
                               config?: RequestConfig): Observable<SecuritySettings> {
     return this.http.post<SecuritySettings>('/api/admin/securitySettings', securitySettings,
       defaultHttpOptionsFromConfig(config));
+  }
+
+  public syncRuleChain(request: SyncRuleChainRequest, config?: RequestConfig): Observable<SyncRuleChainResult> {
+    return this.http.post<SyncRuleChainResult>('/api/admin/ruleChain/sync', request, defaultHttpOptionsFromConfig(config));
   }
 
   public getJwtSettings(config?: RequestConfig): Observable<JwtSettings> {

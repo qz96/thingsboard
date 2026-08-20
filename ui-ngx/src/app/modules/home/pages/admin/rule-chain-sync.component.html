@@ -1,0 +1,113 @@
+<mat-card appearance="outlined" class="settings-card">
+  <mat-card-header>
+    <mat-card-title>
+      <div class="flex flex-row">
+        <span class="mat-headline-5" translate>admin.rule-chain-sync</span>
+      </div>
+    </mat-card-title>
+    <span class="flex-1"></span>
+    <button mat-raised-button color="primary" type="button"
+            [disabled]="syncing || syncFormGroup.invalid"
+            (click)="sync()">
+      <mat-icon>sync</mat-icon>
+      <span translate>admin.rule-chain-sync</span>
+    </button>
+  </mat-card-header>
+  <mat-progress-bar color="warn" mode="indeterminate" *ngIf="syncing">
+  </mat-progress-bar>
+  <div style="height: 4px;" *ngIf="!syncing"></div>
+  <mat-card-content>
+    <p class="hint" translate>admin.rule-chain-sync-hint</p>
+
+    <form [formGroup]="syncFormGroup" class="sync-form tb-form-panel no-padding">
+      <fieldset [disabled]="syncing">
+        <div class="form-grid">
+          <tb-entity-autocomplete class="tb-autocomplete"
+                                  [entityType]="EntityType.TENANT"
+                                  [additionalClasses]="['mat-block']"
+                                  [labelText]="'admin.source-tenant'"
+                                  [required]="true"
+                                  useFullEntityId
+                                  formControlName="sourceTenant">
+          </tb-entity-autocomplete>
+
+          <mat-form-field>
+            <mat-label translate>admin.rule-chain-type</mat-label>
+            <mat-select formControlName="ruleChainType">
+              <mat-option *ngFor="let t of [RuleChainType.CORE, RuleChainType.EDGE]" [value]="t">
+                {{ t }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label translate>admin.source-rule-chain</mat-label>
+            <mat-select formControlName="sourceRuleChain"
+                        [disabled]="syncing || !syncFormGroup.get('sourceTenant').value?.id">
+              <mat-option *ngIf="loadingRuleChains" disabled>
+                <mat-spinner diameter="20"></mat-spinner>
+              </mat-option>
+              <mat-option *ngFor="let rc of ruleChains" [value]="rc">
+                {{ rc.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label translate>admin.missing-target-strategy</mat-label>
+            <mat-select formControlName="missingTargetStrategy">
+              <mat-option [value]="MissingTargetStrategy.CREATE">{{ 'admin.strategy-create' | translate }}</mat-option>
+              <mat-option [value]="MissingTargetStrategy.SKIP">{{ 'admin.strategy-skip' | translate }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-checkbox formControlName="dryRun" class="dry-run">
+            <span translate>admin.dry-run</span>
+          </mat-checkbox>
+        </div>
+      </fieldset>
+    </form>
+
+    <div *ngIf="result" class="result-section">
+      <mat-divider></mat-divider>
+      <div *ngIf="result.sourceSelfContained === false" class="error-banner">
+        {{ result.message }}
+      </div>
+      <div *ngIf="result.sourceSelfContained !== false" class="summary">
+        <span class="chip created">Created: {{ result.created || 0 }}</span>
+        <span class="chip updated">Updated: {{ result.updated || 0 }}</span>
+        <span class="chip skipped">Skipped: {{ result.skipped || 0 }}</span>
+        <span class="chip failed">Failed: {{ result.failed || 0 }}</span>
+        <span class="chip total">Total tenants: {{ result.totalTenants || 0 }}</span>
+      </div>
+      <div class="result-table-wrap">
+        <table mat-table [dataSource]="result.tenants || []" class="result-table" [trackBy]="trackByTenantId">
+          <ng-container matColumnDef="tenantName">
+            <th mat-header-cell *matHeaderCellDef translate>admin.col-tenant</th>
+            <td mat-cell *matCellDef="let d">{{ d.tenantName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef translate>admin.col-status</th>
+            <td mat-cell *matCellDef="let d">
+              <span class="status-chip" [ngClass]="d.status.toLowerCase()">{{ statusLabel(d.status) }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="targetRuleChainId">
+            <th mat-header-cell *matHeaderCellDef translate>admin.col-target-rule-chain</th>
+            <td mat-cell *matCellDef="let d">{{ d.targetRuleChainId || '-' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="message">
+            <th mat-header-cell *matHeaderCellDef translate>admin.col-message</th>
+            <td mat-cell *matCellDef="let d">{{ d.message || '-' }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

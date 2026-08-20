@@ -71,6 +71,7 @@ import org.thingsboard.server.common.data.sync.vc.RepositorySettingsInfo;
 import org.thingsboard.server.common.data.sync.vc.VcUtils;
 import org.thingsboard.server.config.annotations.ApiOperation;
 import org.thingsboard.server.dao.audit.AuditLogService;
+import org.thingsboard.server.dao.rule.RuleChainService;
 import org.thingsboard.server.dao.settings.AdminSettingsService;
 import org.thingsboard.server.dao.settings.SecuritySettingsService;
 import org.thingsboard.server.queue.util.TbCoreComponent;
@@ -80,6 +81,13 @@ import org.thingsboard.server.service.security.model.SecurityUser;
 import org.thingsboard.server.service.security.model.token.JwtTokenFactory;
 import org.thingsboard.server.service.security.permission.Operation;
 import org.thingsboard.server.service.security.permission.Resource;
+import org.thingsboard.server.common.data.page.PageData;
+import org.thingsboard.server.common.data.page.PageLink;
+import org.thingsboard.server.common.data.rule.RuleChain;
+import org.thingsboard.server.common.data.rule.RuleChainType;
+import org.thingsboard.server.common.data.rule.SyncRuleChainRequest;
+import org.thingsboard.server.common.data.rule.SyncRuleChainResult;
+import org.thingsboard.server.service.rule.TbRuleChainSyncService;
 import org.thingsboard.server.service.security.system.SystemSecurityService;
 import org.thingsboard.server.service.sync.vc.EntitiesVersionControlService;
 import org.thingsboard.server.service.sync.vc.autocommit.TbAutoCommitSettingsService;
@@ -117,6 +125,8 @@ public class AdminController extends BaseController {
     private final UpdateService updateService;
     private final SystemInfoService systemInfoService;
     private final AuditLogService auditLogService;
+    private final TbRuleChainSyncService ruleChainSyncService;
+    private final RuleChainService ruleChainService;
 
     @Value("${queue.vc.request-timeout:180000}")
     private int vcRequestTimeout;
@@ -481,6 +491,46 @@ public class AdminController extends BaseController {
 
         adminSettingsService.saveAdminSettings(TenantId.SYS_TENANT_ID, adminSettings);
         response.sendRedirect(prevUri);
+    }
+
+    @ApiOperation(value = "Get Rule Chains for a tenant (getTenantRuleChains)",
+            notes = "Returns a page of Rule Chains owned by the specified tenant. Intended for SYS_ADMIN cross-tenant operations."
+                    + SYSTEM_AUTHORITY_PARAGRAPH)
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
+    @GetMapping(value = "/ruleChains", params = {"pageSize", "page"})
+    public PageData<RuleChain> getTenantRuleChains(
+            @Parameter(description = "The Tenant Id", required = true)
+            @RequestParam String tenantId,
+            @Parameter(description = "Maximum amount of Rule Chains returned.", required = true)
+            @RequestParam int pageSize,
+            @Parameter(description = "Zero-based page index.", required = true)
+            @RequestParam int page,
+            @Parameter(description = "Rule chain type (CORE or EDGE)")
+            @RequestParam(value = "type", required = false) String typeStr,
+            @Parameter(description = "Case-insensitive substring search by name.")
+            @RequestParam(required = false) String textSearch,
+            @Parameter(description = "Property to sort by.")
+            @RequestParam(required = false) String sortProperty,
+            @Parameter(description = "Sort order (ASC or DESC).")
+            @RequestParam(required = false) String sortOrder) throws ThingsboardException {
+        TenantId tenantIdObj = TenantId.fromUUID(toUUID(tenantId));
+        PageLink pageLink = createPageLink(pageSize, page, textSearch, sortProperty, sortOrder);
+        RuleChainType type = RuleChainType.CORE;
+        if (StringUtils.isNotBlank(typeStr)) {
+            type = RuleChainType.valueOf(typeStr);
+        }
+        return checkNotNull(ruleChainService.findTenantRuleChainsByType(tenantIdObj, type, pageLink));
+    }
+
+    @ApiOperation(value = "Sync rule chain across all tenants (syncRuleChain)",
+            notes = "Push the source tenant's named rule chain config to all other tenants that have a rule chain "
+                    + "with the same name (overwrite), or create it in tenants that don't (depending on missingTargetStrategy). "
+                    + "Only self-contained rule chains are supported; a chain referencing other entities is aborted. "
+                    + SYSTEM_AUTHORITY_PARAGRAPH)
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
+    @PostMapping(value = "/ruleChain/sync")
+    public SyncRuleChainResult syncRuleChain(@RequestBody SyncRuleChainRequest request) throws ThingsboardException {
+        return ruleChainSyncService.syncRuleChain(request, getCurrentUser());
     }
 
 }

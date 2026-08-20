@@ -68,6 +68,13 @@ export class RuleChainService {
       defaultHttpOptionsFromConfig(config));
   }
 
+  public getTenantRuleChains(tenantId: string, pageLink: PageLink, type: RuleChainType = RuleChainType.CORE,
+                             config?: RequestConfig): Observable<PageData<RuleChain>> {
+    return this.http.get<PageData<RuleChain>>(
+      `/api/admin/ruleChains?tenantId=${tenantId}${pageLink.toQuery().replace('?', '&')}&type=${type}`,
+      defaultHttpOptionsFromConfig(config));
+  }
+
   public getRuleChain(ruleChainId: string, config?: RequestConfig): Observable<RuleChain> {
     return this.http.get<RuleChain>(`/api/ruleChain/${ruleChainId}`, defaultHttpOptionsFromConfig(config));
   }

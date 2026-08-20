@@ -38,6 +38,7 @@ import { JsResourceComponent } from '@home/pages/admin/resource/js-resource.comp
 import { NgxFlowModule } from '@flowjs/ngx-flow';
 import { TrendzSettingsComponent } from '@home/pages/admin/trendz-settings.component';
 import { ResourceLibraryTabsComponent } from '@home/pages/admin/resource/resource-library-tabs.component';
+import { RuleChainSyncComponent } from '@home/pages/admin/rule-chain-sync.component';
 
 @NgModule({
   declarations:
@@ -57,7 +58,8 @@ import { ResourceLibraryTabsComponent } from '@home/pages/admin/resource/resourc
       RepositoryAdminSettingsComponent,
       AutoCommitAdminSettingsComponent,
       TwoFactorAuthSettingsComponent,
-      TrendzSettingsComponent
+      TrendzSettingsComponent,
+      RuleChainSyncComponent
     ],
   imports: [
     CommonModule,

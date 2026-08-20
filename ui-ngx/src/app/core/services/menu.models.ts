@@ -106,7 +106,8 @@ export enum MenuId {
   version_control = 'version_control',
   api_usage = 'api_usage',
   trendz_settings = 'trendz_settings',
-  ai_models = 'ai_models'
+  ai_models = 'ai_models',
+  rule_chain_sync = 'rule_chain_sync'
 }
 
 declare type MenuFilter = (authState: AuthState) => boolean;
@@ -707,6 +708,17 @@ export const menuSectionMap = new Map<MenuId, MenuSection>([
       path: '/settings/trendz',
       icon: 'trendz-settings'
     }
+  ],
+  [
+    MenuId.rule_chain_sync,
+    {
+      id: MenuId.rule_chain_sync,
+      name: 'admin.rule-chain-sync',
+      fullName: 'admin.rule-chain-sync',
+      type: 'link',
+      path: '/settings/rule-chain-sync',
+      icon: 'sync'
+    }
   ]
 ]);
 
@@ -769,7 +781,8 @@ const defaultUserMenuMap = new Map<Authority, MenuReference[]>([
           {id: MenuId.general},
           {id: MenuId.mail_server},
           {id: MenuId.notification_settings},
-          {id: MenuId.queues}
+          {id: MenuId.queues},
+          {id: MenuId.rule_chain_sync}
         ]
       },
       {
@@ -926,7 +939,7 @@ const defaultHomeSectionMap = new Map<Authority, HomeSectionReference[]>([
         name: 'admin.system-settings',
         places: [MenuId.general, MenuId.mail_server,
           MenuId.notification_settings, MenuId.security_settings, MenuId.oauth2, MenuId.domains,
-          MenuId.clients, MenuId.two_fa, MenuId.resources_library, MenuId.queues]
+          MenuId.clients, MenuId.two_fa, MenuId.resources_library, MenuId.queues, MenuId.rule_chain_sync]
       }
     ]
   ],
