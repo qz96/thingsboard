@@ -117,6 +117,8 @@
               ]
             },
             "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/tooltipster/dist/js/tooltipster.bundle.min.js",
               "node_modules/tinycolor2/dist/tinycolor-min.js",
               "node_modules/split.js/dist/split.min.js",
               "node_modules/systemjs/dist/system.min.js",

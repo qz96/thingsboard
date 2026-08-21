@@ -1058,7 +1058,16 @@ transport:
     max_request_timeout: "${HTTP_MAX_REQUEST_TIMEOUT:300000}"
     # Semi-colon-separated list of urlPattern=maxPayloadSize pairs that define max http request size for specified url pattern. After first match all other will be skipped
     max_payload_size: "${HTTP_TRANSPORT_MAX_PAYLOAD_SIZE_LIMIT_CONFIGURATION:/api/v1/*/rpc/**=65536;/api/v1/**=52428800}"
-  # Local MQTT transport parameters
+  # Local SL651 transport parameters
+  sl651:
+    # Enable/disable SL651 transport protocol.
+    enabled: "${SL651_ENABLED:true}"
+    # SL651 TCP bind-address
+    bind_address: "${SL651_BIND_ADDRESS:0.0.0.0}"
+    # SL651 TCP bind port
+    bind_port: "${SL651_BIND_PORT:8501}"
+    # SL651 读空闲超时（毫秒）：超过该时长未收到终端数据即断开连接
+    timeout: "${SL651_TIMEOUT:600000}"
   mqtt:
     # Enable/disable mqtt transport protocol.
     enabled: "${MQTT_ENABLED:true}"

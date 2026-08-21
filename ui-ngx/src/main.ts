@@ -22,11 +22,6 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from '@app/app.module';
 import { environment } from '@env/environment';
 
-import $ from 'jquery';
-
-(window as any).jQuery = $;
-(window as any).$ = $;
-
 if (environment.production) {
   enableProdMode();
 }

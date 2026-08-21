@@ -20,5 +20,6 @@ public enum DeviceTransportType {
     MQTT,
     COAP,
     LWM2M,
-    SNMP
+    SNMP,
+    SL651
 }

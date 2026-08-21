@@ -49,7 +49,8 @@ export enum DeviceTransportType {
   MQTT = 'MQTT',
   COAP = 'COAP',
   LWM2M = 'LWM2M',
-  SNMP = 'SNMP'
+  SNMP = 'SNMP',
+  SL651 = 'SL651'
 }
 
 export enum BasicTransportType {
@@ -112,6 +113,7 @@ export const deviceTransportTypeTranslationMap = new Map<TransportType, string>(
     [DeviceTransportType.COAP, 'device-profile.transport-type-coap'],
     [DeviceTransportType.LWM2M, 'device-profile.transport-type-lwm2m'],
     [DeviceTransportType.SNMP, 'device-profile.transport-type-snmp'],
+    [DeviceTransportType.SL651, 'device-profile.transport-type-sl651'],
     [BasicTransportType.HTTP, 'device-profile.transport-type-http']
   ]
 );
@@ -133,6 +135,7 @@ export const deviceTransportTypeHintMap = new Map<TransportType, string>(
     [DeviceTransportType.COAP, 'device-profile.transport-type-coap-hint'],
     [DeviceTransportType.LWM2M, 'device-profile.transport-type-lwm2m-hint'],
     [DeviceTransportType.SNMP, 'device-profile.transport-type-snmp-hint'],
+    [DeviceTransportType.SL651, 'device-profile.transport-type-sl651-hint'],
     [BasicTransportType.HTTP, '']
   ]
 );
@@ -234,6 +237,13 @@ export const deviceTransportTypeConfigurationInfoMap = new Map<DeviceTransportTy
         hasProfileConfiguration: true,
         hasDeviceConfiguration: true
       }
+    ],
+    [
+      DeviceTransportType.SL651,
+      {
+        hasProfileConfiguration: true,
+        hasDeviceConfiguration: false,
+      }
     ]
   ]
 );
@@ -322,11 +332,18 @@ export interface SnmpMapping {
   dataType: DataType;
 }
 
+export interface Sl651DeviceProfileTransportConfiguration {
+  telemetryKeyPrefix?: string;
+  statusReportAsAttribute?: boolean;
+  reportTypes?: string[];
+}
+
 export type DeviceProfileTransportConfigurations = DefaultDeviceProfileTransportConfiguration &
                                                    MqttDeviceProfileTransportConfiguration &
                                                    CoapDeviceProfileTransportConfiguration &
                                                    Lwm2mDeviceProfileTransportConfiguration &
-                                                   SnmpDeviceProfileTransportConfiguration;
+                                                   SnmpDeviceProfileTransportConfiguration &
+                                                   Sl651DeviceProfileTransportConfiguration;
 
 export interface DeviceProfileTransportConfiguration extends DeviceProfileTransportConfigurations {
   type: DeviceTransportType;
@@ -419,6 +436,14 @@ export const createDeviceProfileTransportConfiguration = (type: DeviceTransportT
         };
         transportConfiguration = {...snmpTransportConfiguration, type: DeviceTransportType.SNMP};
         break;
+      case DeviceTransportType.SL651:
+        const sl651TransportConfiguration: Sl651DeviceProfileTransportConfiguration = {
+          telemetryKeyPrefix: 'sl651',
+          statusReportAsAttribute: true,
+          reportTypes: []
+        };
+        transportConfiguration = {...sl651TransportConfiguration, type: DeviceTransportType.SL651};
+        break;
     }
   }
   return transportConfiguration;
@@ -456,6 +481,9 @@ export const createDeviceTransportConfiguration = (type: DeviceTransportType): D
           community: 'public'
         };
         transportConfiguration = {...snmpTransportConfiguration, type: DeviceTransportType.SNMP};
+        break;
+      case DeviceTransportType.SL651:
+        transportConfiguration = {type: DeviceTransportType.SL651} as DeviceTransportConfiguration;
         break;
     }
   }
@@ -797,7 +825,8 @@ export const credentialTypesByTransportType = new Map<DeviceTransportType, Devic
     ]],
     [DeviceTransportType.COAP, [DeviceCredentialsType.ACCESS_TOKEN, DeviceCredentialsType.X509_CERTIFICATE]],
     [DeviceTransportType.LWM2M, [DeviceCredentialsType.LWM2M_CREDENTIALS]],
-    [DeviceTransportType.SNMP, [DeviceCredentialsType.ACCESS_TOKEN]]
+    [DeviceTransportType.SNMP, [DeviceCredentialsType.ACCESS_TOKEN]],
+    [DeviceTransportType.SL651, [DeviceCredentialsType.ACCESS_TOKEN]]
   ]
 );
 

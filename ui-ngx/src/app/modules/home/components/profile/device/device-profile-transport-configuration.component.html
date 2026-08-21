@@ -43,5 +43,10 @@
         formControlName="configuration">
       </tb-snmp-device-profile-transport-configuration>
     </ng-template>
+    <ng-template [ngSwitchCase]="deviceTransportType.SL651">
+      <tb-sl651-device-profile-transport-configuration
+        formControlName="configuration">
+      </tb-sl651-device-profile-transport-configuration>
+    </ng-template>
   </div>
 </div>
