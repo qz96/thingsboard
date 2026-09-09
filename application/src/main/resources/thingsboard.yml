@@ -150,6 +150,19 @@ security:
   user_token_access_enabled: "${SECURITY_USER_TOKEN_ACCESS_ENABLED:true}"
   # Enable/disable case-sensitive username login
   user_login_case_sensitive: "${SECURITY_USER_LOGIN_CASE_SENSITIVE:true}"
+  # IoT bridge (water platform -> IoT platform passwordless jump). Verify signed assertion from external water platform and provision tenant-admin accounts.
+  iot-bridge:
+    enabled: "true"
+    # PEM public key (RSA, >= 2048 bits) of the assertion signer (water platform). Base64 X.509 SubjectPublicKeyInfo, without PEM headers.
+    rsaPublicKey: "MIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEA1HjPXcfYnDoWNfP9gvO0NhPXVuzonNZJYAulki8/Zbty0QR4C0tv/pOYRSWuZBziA/JsAAc1Sx4yEtO5khVwEA+32urjV1yBbX/iNSVsrF5n9T/a+RBZkDuPFnJxpmjGPakqUjRGZUpno7ef1CtHeklVi9ZdHNGcChhvi+NuZVW+RW9X/VU2l6fahAan5bkX1yWa3+KH5bbG8bpzCC3cy1VCJB9Fy0SYbcSq96yNPvNhiBuZXZsZKx2/X2QL5puwArmf+tcPFXl00lVIZMu+zxEURLPh9fS7SEmeTVs33M6ocXskD9AbrwB8NV4g9A7sukQjQhy8YRWUYWbu6s5u5iFmiNig/qburvCnRlKMgCFsCh/9kQe3EuAw7A2GJ8Dmh/sAfPxYjwU3QX7fdYZCQaNY/RwVeWx3F/J+2rgOiFs4kiJMh6Gwu7M2dMG3zpIISY/K2JgOHEOKF/dXZh+BmwlZBoqasa5/miDv4TQsGxS/k1X8ty9jjW02TcKSYsFHAgMBAAE="
+    # Expected issuer of the assertion
+    issuer: "${SECURITY_IOT_BRIDGE_ISSUER:water-platform}"
+    # Expected audience of the assertion
+    audience: "${SECURITY_IOT_BRIDGE_AUDIENCE:iot-platform}"
+    # Allowed clock skew in seconds when verifying assertion exp/iat
+    clockSkewSeconds: "${SECURITY_IOT_BRIDGE_CLOCK_SKEW_SECONDS:60}"
+    # TTL in seconds for consumed assertion jti (must be >= assertion validity window)
+    jtiCacheTtlSeconds: "${SECURITY_IOT_BRIDGE_JTI_CACHE_TTL:300}"
   claim:
     # Enable/disable claiming devices; if false -> the device's [claimingAllowed] SERVER_SCOPE attribute must be set to [true] to allow claiming the specific device
     allowClaimingByDefault: "${SECURITY_CLAIM_ALLOW_CLAIMING_BY_DEFAULT:true}"
