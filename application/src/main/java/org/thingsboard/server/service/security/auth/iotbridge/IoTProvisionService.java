@@ -33,7 +33,6 @@ import org.thingsboard.server.dao.user.UserService;
 import org.thingsboard.server.queue.util.TbCoreComponent;
 
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Idempotent provisioning of IoT platform tenant-admin accounts from a verified water-platform assertion.
@@ -126,10 +125,11 @@ public class IoTProvisionService {
         user.setAdditionalInfo(additionalInfo);
         user = userService.saveUser(tenant.getId(), user);
 
-        // Activate credentials with a strong random password (password login is not used; access is via the jump exchange)
+        // Activate credentials with password = login (user-selected design: password equals the account).
+        // Users are expected to change it manually after first login (no hard force-change flow).
         try {
             UserCredentials credentials = userService.findUserCredentialsByUserId(tenant.getId(), user.getId());
-            String rawPassword = UUID.randomUUID().toString().replace("-", "") + "Aa1!";
+            String rawPassword = login;
             userService.activateUserCredentials(tenant.getId(), credentials.getActivateToken(), passwordEncoder.encode(rawPassword));
         } catch (Exception e) {
             log.warn("IoT bridge failed to activate credentials for user [{}]: {}", login, e.getMessage());
