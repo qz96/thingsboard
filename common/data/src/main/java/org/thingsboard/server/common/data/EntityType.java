@@ -69,7 +69,9 @@ public enum EntityType {
         public String getNormalName() {
             return "AI model";
         }
-    };
+    },
+    ANDROID_APP(44),
+    ANDROID_APP_VERSION(45);
 
     @Getter
     private final int protoNumber; // Corresponds to EntityTypeProto

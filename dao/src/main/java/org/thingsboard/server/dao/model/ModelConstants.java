@@ -467,6 +467,30 @@ public class ModelConstants {
     public static final StoreInfo MOBILE_APP_STORE_INFO_EMPTY_OBJECT = new StoreInfo();
 
     /**
+     * Android application management constants.
+     */
+    public static final String ANDROID_APP_TABLE_NAME = "tb_android_app";
+    public static final String ANDROID_APP_VERSION_TABLE_NAME = "tb_android_app_version";
+    public static final String UPDATED_TIME_PROPERTY = "updated_time";
+    public static final String ANDROID_APP_TITLE_PROPERTY = "title";
+    public static final String ANDROID_APP_PKG_NAME_PROPERTY = "pkg_name";
+    public static final String ANDROID_APP_DESCRIPTION_PROPERTY = "description";
+    public static final String ANDROID_APP_ICON_URL_PROPERTY = "icon_url";
+    public static final String ANDROID_APP_ICON_FILE_NAME_PROPERTY = "icon_file_name";
+    public static final String ANDROID_APP_STATUS_PROPERTY = "status";
+    public static final String ANDROID_APP_VERSION_APP_ID_PROPERTY = "app_id";
+    public static final String ANDROID_APP_VERSION_NAME_PROPERTY = "version_name";
+    public static final String ANDROID_APP_VERSION_CODE_PROPERTY = "version_code";
+    public static final String ANDROID_APP_VERSION_RELEASE_NOTES_PROPERTY = "release_notes";
+    public static final String ANDROID_APP_VERSION_APK_URL_PROPERTY = "apk_url";
+    public static final String ANDROID_APP_VERSION_APK_FILE_NAME_PROPERTY = "apk_file_name";
+    public static final String ANDROID_APP_VERSION_APK_SIZE_PROPERTY = "apk_size";
+    public static final String ANDROID_APP_VERSION_APK_MD5_PROPERTY = "apk_md5";
+    public static final String ANDROID_APP_VERSION_PREVIEW_URL_PROPERTY = "preview_url";
+    public static final String ANDROID_APP_VERSION_FORCE_UPDATE_PROPERTY = "force_update";
+    public static final String ANDROID_APP_VERSION_STATUS_PROPERTY = "status";
+
+    /**
      * Mobile application bundle constants.
      */
     public static final String MOBILE_APP_BUNDLE_TABLE_NAME = "mobile_app_bundle";

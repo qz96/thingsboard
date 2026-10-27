@@ -1,0 +1,95 @@
+<!--
+
+    Copyright © 2016-2025 The Thingsboard Authors
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<section class="mat-padding tb-form-panel outlined" [formGroup]="entityForm">
+  <section class="flex flex-row" style="gap: 16px;">
+    <mat-form-field class="flex-1" appearance="outline" subscriptSizing="dynamic">
+      <mat-label translate>androidapp.version-name</mat-label>
+      <input matInput required formControlName="versionName">
+      <mat-hint> </mat-hint>
+      <mat-error *ngIf="entityForm.get('versionName').hasError('required')">
+        {{ 'androidapp.version-name-required' | translate }}
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field class="flex-1" appearance="outline" subscriptSizing="dynamic">
+      <mat-label translate>androidapp.version-code</mat-label>
+      <input matInput required type="number" formControlName="versionCode">
+      <mat-hint>{{ 'androidapp.version-code-hint' | translate }}</mat-hint>
+      <mat-error *ngIf="entityForm.get('versionCode').hasError('required')">
+        {{ 'androidapp.version-code-required' | translate }}
+      </mat-error>
+      <mat-error *ngIf="entityForm.get('versionCode').hasError('min')">
+        {{ 'androidapp.version-code-min' | translate }}
+      </mat-error>
+    </mat-form-field>
+  </section>
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label translate>androidapp.apk-url</mat-label>
+    <input matInput formControlName="apkUrl">
+    <tb-copy-button
+      matSuffix
+      miniButton="false"
+      [copyText]="entityForm.get('apkUrl').value"
+      tooltipText="{{ 'androidapp.copy-apk-url' | translate }}"
+      tooltipPosition="above"
+      icon="content_copy">
+    </tb-copy-button>
+    <mat-hint>{{ 'androidapp.apk-url-hint' | translate }}</mat-hint>
+    <mat-error *ngIf="entityForm.get('apkUrl').hasError('maxlength')">
+      {{ 'androidapp.url-max-length' | translate }}
+    </mat-error>
+  </mat-form-field>
+  <section class="flex flex-row" style="gap: 16px;">
+    <mat-form-field class="flex-1" appearance="outline" subscriptSizing="dynamic">
+      <mat-label translate>androidapp.apk-file-name</mat-label>
+      <input matInput formControlName="apkFileName">
+      <mat-hint> </mat-hint>
+    </mat-form-field>
+    <mat-form-field class="flex-1" appearance="outline" subscriptSizing="dynamic">
+      <mat-label translate>androidapp.apk-size</mat-label>
+      <input matInput type="number" formControlName="apkSize">
+      <mat-hint>{{ 'androidapp.apk-size-hint' | translate }}</mat-hint>
+      <mat-error *ngIf="entityForm.get('apkSize').hasError('min')">
+        {{ 'androidapp.apk-size-min' | translate }}
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field class="flex-1" appearance="outline" subscriptSizing="dynamic">
+      <mat-label translate>androidapp.apk-md5</mat-label>
+      <input matInput formControlName="apkMd5">
+      <mat-hint> </mat-hint>
+    </mat-form-field>
+  </section>
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label translate>androidapp.preview-url</mat-label>
+    <input matInput formControlName="previewUrl">
+    <mat-hint>{{ 'androidapp.preview-url-hint' | translate }}</mat-hint>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label translate>androidapp.release-notes</mat-label>
+    <textarea matInput formControlName="releaseNotes" rows="4"></textarea>
+  </mat-form-field>
+  <section class="tb-form-row column-xs" *ngIf="!isAdd">
+    <div class="tb-form-row no-border no-padding">
+      <span class="tb-form-panel-title" translate>androidapp.status</span>
+      <span>{{ androidAppVersionStatusTranslations.get(entity?.status) | translate }}</span>
+    </div>
+  </section>
+  <mat-checkbox formControlName="forceUpdate">
+    {{ 'androidapp.force-update' | translate }}
+    <span class="tb-hint" style="display: block;">{{ 'androidapp.force-update-hint' | translate }}</span>
+  </mat-checkbox>
+</section>

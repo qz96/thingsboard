@@ -84,6 +84,8 @@ public class EntityIdFactory {
             case JOB -> new JobId(uuid);
             case ADMIN_SETTINGS -> new AdminSettingsId(uuid);
             case AI_MODEL -> new AiModelId(uuid);
+            case ANDROID_APP -> new AndroidAppId(uuid);
+            case ANDROID_APP_VERSION -> new AndroidAppVersionId(uuid);
         };
     }
 

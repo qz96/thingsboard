@@ -52,6 +52,8 @@ export enum EntityType {
   MOBILE_APP = 'MOBILE_APP',
   CALCULATED_FIELD = 'CALCULATED_FIELD',
   AI_MODEL = 'AI_MODEL',
+  ANDROID_APP = 'ANDROID_APP',
+  ANDROID_APP_VERSION = 'ANDROID_APP_VERSION',
 }
 
 export enum AliasEntityType {
@@ -484,6 +486,28 @@ export const entityTypeTranslations = new Map<EntityType | AliasEntityType, Enti
       }
     ],
     [
+      EntityType.ANDROID_APP,
+      {
+        type: 'entity.type-android-app',
+        typePlural: 'entity.type-android-apps',
+        list: 'entity.list-of-android-apps',
+        add: 'androidapp.add-app',
+        noEntities: 'androidapp.no-apps',
+        search: 'androidapp.search-apps'
+      }
+    ],
+    [
+      EntityType.ANDROID_APP_VERSION,
+      {
+        type: 'entity.type-android-app-version',
+        typePlural: 'entity.type-android-app-versions',
+        list: 'entity.list-of-android-app-versions',
+        add: 'androidapp.add-version',
+        noEntities: 'androidapp.no-versions',
+        search: 'androidapp.search-versions'
+      }
+    ],
+    [
       EntityType.CALCULATED_FIELD,
       {
         type: 'entity.type-calculated-field',
@@ -629,6 +653,18 @@ export const entityTypeResources = new Map<EntityType, EntityTypeResource<BaseDa
     ],
     [
       EntityType.MOBILE_APP,
+      {
+        helpLinkId: 'mobileApplication'
+      }
+    ],
+    [
+      EntityType.ANDROID_APP,
+      {
+        helpLinkId: 'mobileApplication'
+      }
+    ],
+    [
+      EntityType.ANDROID_APP_VERSION,
       {
         helpLinkId: 'mobileApplication'
       }
