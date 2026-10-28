@@ -48,6 +48,8 @@ import { GatewaysModule } from '@home/pages/gateways/gateways.module';
 import { MobileModule } from '@home/pages/mobile/mobile.module';
 import { AiModelModule } from '@home/pages/ai-model/ai-model.module';
 import { AndroidAppModule } from '@home/pages/androidapp/android-app.module';
+import { PlatformDeviceModule } from '@home/pages/platform/platform-device.module';
+import { RegionViewerModule } from '@home/pages/regionviewer/region-viewer.module';
 
 @NgModule({
   exports: [
@@ -83,6 +85,8 @@ import { AndroidAppModule } from '@home/pages/androidapp/android-app.module';
     ScadaSymbolModule,
     AiModelModule,
     AndroidAppModule,
+    PlatformDeviceModule,
+    RegionViewerModule,
   ]
 })
 export class HomePagesModule { }

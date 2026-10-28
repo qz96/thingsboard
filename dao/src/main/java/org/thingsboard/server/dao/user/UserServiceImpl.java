@@ -364,6 +364,14 @@ public class UserServiceImpl extends AbstractCachedEntityService<UserCacheKey, U
     }
 
     @Override
+    public PageData<User> findTenantViewers(TenantId tenantId, PageLink pageLink) {
+        log.trace("Executing findTenantViewers, tenantId [{}], pageLink [{}]", tenantId, pageLink);
+        validateId(tenantId, id -> INCORRECT_TENANT_ID + id);
+        validatePageLink(pageLink);
+        return userDao.findByAuthorityAndTenantsIds(Authority.TENANT_VIEWER, Collections.singletonList(tenantId), pageLink);
+    }
+
+    @Override
     public PageData<User> findSysAdmins(PageLink pageLink) {
         return userDao.findAllByAuthority(Authority.SYS_ADMIN, pageLink);
     }

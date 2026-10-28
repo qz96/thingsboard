@@ -36,6 +36,9 @@ import { UserTabsComponent } from '@home/pages/user/user-tabs.component';
     SharedModule,
     HomeComponentsModule,
     UserRoutingModule
+  ],
+  exports: [
+    AddUserDialogComponent
   ]
 })
 export class UserModule { }

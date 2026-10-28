@@ -67,6 +67,8 @@ public class IoTBridgeController {
         SecurityUser securityUser = toSecurityUser(result.user());
         Map<String, Object> extraClaims = buildExtraClaims(claims);
         JwtPair pair = tokenFactory.createTokenPair(securityUser, extraClaims);
+        // expose the effective role so the water platform can react (TENANT_ADMIN = project admin, TENANT_VIEWER = staff)
+        pair.setScope(result.user().getAuthority());
         return new ResponseEntity<>(pair, HttpStatus.OK);
     }
 

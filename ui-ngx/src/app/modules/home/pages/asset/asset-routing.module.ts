@@ -39,7 +39,7 @@ export const assetRoutes: Routes = [
         path: '',
         component: EntitiesTableComponent,
         data: {
-          auth: [Authority.TENANT_ADMIN, Authority.CUSTOMER_USER],
+          auth: [Authority.TENANT_ADMIN, Authority.CUSTOMER_USER, Authority.TENANT_VIEWER],
           title: 'asset.assets',
           assetsType: 'tenant'
         },
@@ -56,7 +56,7 @@ export const assetRoutes: Routes = [
             labelFunction: entityDetailsPageBreadcrumbLabelFunction,
             icon: 'domain'
           } as BreadCrumbConfig<EntityDetailsPageComponent>,
-          auth: [Authority.TENANT_ADMIN, Authority.CUSTOMER_USER],
+          auth: [Authority.TENANT_ADMIN, Authority.CUSTOMER_USER, Authority.TENANT_VIEWER],
           title: 'asset.assets',
           assetsType: 'tenant'
         },

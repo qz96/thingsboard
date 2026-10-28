@@ -108,7 +108,7 @@ public class EntityViewController extends BaseController {
     @ApiOperation(value = "Get Entity View info (getEntityViewInfoById)",
             notes = "Fetch the Entity View info object based on the provided Entity View Id. "
                     + ENTITY_VIEW_INFO_DESCRIPTION + MODEL_DESCRIPTION + TENANT_OR_CUSTOMER_AUTHORITY_PARAGRAPH)
-    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER', 'TENANT_VIEWER')")
     @RequestMapping(value = "/entityView/info/{entityViewId}", method = RequestMethod.GET)
     @ResponseBody
     public EntityViewInfo getEntityViewInfoById(
@@ -157,7 +157,7 @@ public class EntityViewController extends BaseController {
 
     @ApiOperation(value = "Get Entity View by name (getTenantEntityView)",
             notes = "Fetch the Entity View object based on the tenant id and entity view name. " + TENANT_AUTHORITY_PARAGRAPH)
-    @PreAuthorize("hasAuthority('TENANT_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'TENANT_VIEWER')")
     @RequestMapping(value = "/tenant/entityViews", params = {"entityViewName"}, method = RequestMethod.GET)
     @ResponseBody
     public EntityView getTenantEntityView(

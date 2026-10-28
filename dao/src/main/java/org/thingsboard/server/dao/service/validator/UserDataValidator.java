@@ -112,6 +112,13 @@ public class UserDataValidator extends DataValidator<User> {
                     throw new DataValidationException("Tenant administrator can't be assigned to customer!");
                 }
                 break;
+            case TENANT_VIEWER:
+                if (tenantId.getId().equals(ModelConstants.NULL_UUID)) {
+                    throw new DataValidationException("Tenant viewer should be assigned to tenant!");
+                } else if (!customerId.getId().equals(ModelConstants.NULL_UUID)) {
+                    throw new DataValidationException("Tenant viewer can't be assigned to customer!");
+                }
+                break;
             case CUSTOMER_USER:
                 if (tenantId.getId().equals(ModelConstants.NULL_UUID)
                         || customerId.getId().equals(ModelConstants.NULL_UUID)) {

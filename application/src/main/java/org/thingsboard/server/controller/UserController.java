@@ -360,6 +360,34 @@ public class UserController extends BaseController {
         return checkNotNull(userService.findTenantAdmins(tenantId, pageLink));
     }
 
+    @ApiOperation(value = "Get Tenant Viewers (getTenantViewers)",
+            notes = "Returns a page of read-only users (TENANT_VIEWER) owned by tenant. " +
+                    "SYS_ADMIN may query any tenant, TENANT_ADMIN only its own tenant." + PAGE_DATA_PARAMETERS)
+    @PreAuthorize("hasAnyAuthority('SYS_ADMIN', 'TENANT_ADMIN')")
+    @RequestMapping(value = "/tenant/{tenantId}/users/viewers", params = {"pageSize", "page"}, method = RequestMethod.GET)
+    @ResponseBody
+    public PageData<User> getTenantViewers(
+            @Parameter(description = TENANT_ID_PARAM_DESCRIPTION, required = true)
+            @PathVariable(TENANT_ID) String strTenantId,
+            @Parameter(description = PAGE_SIZE_DESCRIPTION, required = true)
+            @RequestParam int pageSize,
+            @Parameter(description = PAGE_NUMBER_DESCRIPTION, required = true)
+            @RequestParam int page,
+            @Parameter(description = USER_TEXT_SEARCH_DESCRIPTION)
+            @RequestParam(required = false) String textSearch,
+            @Parameter(description = SORT_PROPERTY_DESCRIPTION, schema = @Schema(allowableValues = {"createdTime", "firstName", "lastName", "email"}))
+            @RequestParam(required = false) String sortProperty,
+            @Parameter(description = SORT_ORDER_DESCRIPTION, schema = @Schema(allowableValues = {"ASC", "DESC"}))
+            @RequestParam(required = false) String sortOrder) throws ThingsboardException {
+        checkParameter("tenantId", strTenantId);
+        TenantId tenantId = TenantId.fromUUID(toUUID(strTenantId));
+        if (!Authority.SYS_ADMIN.equals(getCurrentUser().getAuthority())) {
+            checkTenantId(tenantId, Operation.READ);
+        }
+        PageLink pageLink = createPageLink(pageSize, page, textSearch, sortProperty, sortOrder);
+        return checkNotNull(userService.findTenantViewers(tenantId, pageLink));
+    }
+
     @ApiOperation(value = "Get Customer Users (getCustomerUsers)",
             notes = "Returns a page of users owned by customer. " + PAGE_DATA_PARAMETERS + TENANT_AUTHORITY_PARAGRAPH)
     @PreAuthorize("hasAuthority('TENANT_ADMIN')")

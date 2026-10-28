@@ -71,6 +71,8 @@ export enum MenuId {
   mobile_bundles = 'mobile_bundles',
   mobile_qr_code_widget = 'mobile_qr_code_widget',
   android_apps = 'android_apps',
+  platform_devices = 'platform_devices',
+  region_viewers = 'region_viewers',
   settings = 'settings',
   general = 'general',
   mail_server = 'mail_server',
@@ -348,6 +350,26 @@ export const menuSectionMap = new Map<MenuId, MenuSection>([
       type: 'link',
       path: '/android-apps',
       icon: 'android'
+    }
+  ],
+  [
+    MenuId.region_viewers,
+    {
+      id: MenuId.region_viewers,
+      name: 'region-viewer.title',
+      type: 'link',
+      path: '/region-viewers',
+      icon: 'supervisor_account'
+    }
+  ],
+  [
+    MenuId.platform_devices,
+    {
+      id: MenuId.platform_devices,
+      name: 'platform.platform-devices',
+      type: 'link',
+      path: '/platform-devices',
+      icon: 'devices'
     }
   ],
   [
@@ -750,6 +772,7 @@ const defaultUserMenuMap = new Map<Authority, MenuReference[]>([
     Authority.SYS_ADMIN,
     [
       {id: MenuId.home},
+      {id: MenuId.platform_devices},
       {id: MenuId.tenants},
       {id: MenuId.tenant_profiles},
       {
@@ -836,6 +859,7 @@ const defaultUserMenuMap = new Map<Authority, MenuReference[]>([
         ]
       },
       {id: MenuId.customers},
+      {id: MenuId.region_viewers},
       {id: MenuId.rule_chains},
       {
         id: MenuId.edge_management,
@@ -906,6 +930,22 @@ const defaultUserMenuMap = new Map<Authority, MenuReference[]>([
               {id: MenuId.clients}
             ]
           }
+        ]
+      }
+    ]
+  ],
+  [
+    Authority.TENANT_VIEWER,
+    [
+      {id: MenuId.home},
+      {id: MenuId.alarms},
+      {id: MenuId.dashboards},
+      {
+        id: MenuId.entities,
+        pages: [
+          {id: MenuId.devices},
+          {id: MenuId.assets},
+          {id: MenuId.entity_views}
         ]
       }
     ]

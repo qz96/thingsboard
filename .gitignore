@@ -37,3 +37,14 @@ rebuild-docker.sh
 */.run/**
 .run/**
 .run
+
+# runtime / local only (root level only - do not shadow modules like common/data)
+/.rocksdb/
+/data/
+/.workbuddy/
+
+# locally vendored frontend libs
+ui-ngx/vendor/
+
+# SSO bridge self-test material (contains private keys - never commit)
+docs/iotbridge-test/

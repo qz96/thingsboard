@@ -41,10 +41,12 @@ public class DefaultAccessControlService implements AccessControlService {
     public DefaultAccessControlService(
             @Qualifier("sysAdminPermissions") Permissions sysAdminPermissions,
             @Qualifier("tenantAdminPermissions") Permissions tenantAdminPermissions,
-            @Qualifier("customerUserPermissions") Permissions customerUserPermissions) {
+            @Qualifier("customerUserPermissions") Permissions customerUserPermissions,
+            @Qualifier("tenantViewerPermissions") Permissions tenantViewerPermissions) {
         authorityPermissions.put(Authority.SYS_ADMIN, sysAdminPermissions);
         authorityPermissions.put(Authority.TENANT_ADMIN, tenantAdminPermissions);
         authorityPermissions.put(Authority.CUSTOMER_USER, customerUserPermissions);
+        authorityPermissions.put(Authority.TENANT_VIEWER, tenantViewerPermissions);
     }
 
     @Override
