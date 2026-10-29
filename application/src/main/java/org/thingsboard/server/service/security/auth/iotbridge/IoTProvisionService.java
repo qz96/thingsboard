@@ -52,8 +52,8 @@ import java.util.regex.Pattern;
  *   <li>One <b>(waterUserId, projectId)</b> pair = one IoT account, tracked in {@code tb_sso_account}.</li>
  *   <li>Assertion {@code roles} contains {@code PROJECT_ADMIN} -&gt; {@link Authority#TENANT_ADMIN},
  *       otherwise {@link Authority#TENANT_VIEWER} (read only).</li>
- *   <li>At most one tenant administrator per tenant. Promotion transfers the administrator role:
- *       the previous administrator is demoted to {@code TENANT_VIEWER}.</li>
+ *   <li>Multiple tenant administrators per tenant are allowed (one per {@code PROJECT_ADMIN} account).
+ *       Each account's role is derived only from its own assertion, so there are no cross-account side effects.</li>
  *   <li>Last-admin protection: an administrator is never demoted when he is the only one left, even if the
  *       assertion no longer carries {@code PROJECT_ADMIN} (prevents an unmanageable region).</li>
  * </ul>
