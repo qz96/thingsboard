@@ -46,5 +46,5 @@ rebuild-docker.sh
 # locally vendored frontend libs
 ui-ngx/vendor/
 
-# SSO bridge self-test material (contains private keys - never commit)
-docs/iotbridge-test/
+# local documentation (design docs, integration docs, verification material) - kept locally only
+docs/
