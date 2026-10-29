@@ -71,7 +71,8 @@ public enum EntityType {
         }
     },
     ANDROID_APP(44),
-    ANDROID_APP_VERSION(45);
+    ANDROID_APP_VERSION(45),
+    ANDROID_APP_DISPLAY(46);
 
     @Getter
     private final int protoNumber; // Corresponds to EntityTypeProto

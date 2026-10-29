@@ -14,7 +14,7 @@
 /// limitations under the License.
 ///
 
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, Inject } from '@angular/core';
 import { AuthService } from '@core/auth/auth.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '@core/core.state';
@@ -28,23 +28,31 @@ import { environment as env } from '@env/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { updateUserLang } from '@core/settings/settings.utils';
 import { DOCUMENT } from '@angular/common';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { AndroidAppService } from '@core/http/android-app.service';
+import { AndroidAppDisplay } from '@shared/models/android-app.models';
 
 @Component({
   selector: 'tb-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent extends PageComponent implements OnInit {
+export class LoginComponent extends PageComponent implements OnInit, OnDestroy {
 
   passwordViolation = false;
   currentLang: string;
   languageList = env.supportedLangs;
+
+  appDisplays: AndroidAppDisplay[] = [];
 
   loginFormGroup = this.fb.group({
     username: ['', [Validators.required]],
     password: ['']
   });
   oauth2Clients: Array<OAuth2ClientLoginInfo> = null;
+
+  private destroy$ = new Subject<void>();
 
   private langDisplayNames: { [key: string]: string } = {
     'zh_CN': '中文',
@@ -57,6 +65,7 @@ export class LoginComponent extends PageComponent implements OnInit {
               public fb: UntypedFormBuilder,
               private router: Router,
               private translate: TranslateService,
+              private androidAppService: AndroidAppService,
               @Inject(DOCUMENT) private document: Document) {
     super(store);
     this.currentLang = this.translate.currentLang || env.defaultLang;
@@ -64,6 +73,17 @@ export class LoginComponent extends PageComponent implements OnInit {
 
   ngOnInit() {
     this.oauth2Clients = this.authService.oauth2Clients;
+    this.androidAppService.getAndroidAppDisplaysForHome()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((displays: AndroidAppDisplay[]) => {
+        this.appDisplays = displays ?? [];
+      });
+  }
+
+  ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   getLangDisplayName(lang: string): string {

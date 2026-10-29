@@ -54,6 +54,7 @@ export enum EntityType {
   AI_MODEL = 'AI_MODEL',
   ANDROID_APP = 'ANDROID_APP',
   ANDROID_APP_VERSION = 'ANDROID_APP_VERSION',
+  ANDROID_APP_DISPLAY = 'ANDROID_APP_DISPLAY',
 }
 
 export enum AliasEntityType {
@@ -508,6 +509,17 @@ export const entityTypeTranslations = new Map<EntityType | AliasEntityType, Enti
       }
     ],
     [
+      EntityType.ANDROID_APP_DISPLAY,
+      {
+        type: 'entity.type-android-app-display',
+        typePlural: 'entity.type-android-app-displays',
+        list: 'entity.list-of-android-app-displays',
+        add: 'androidapp.add-display',
+        noEntities: 'androidapp.no-displays',
+        search: 'androidapp.search-displays'
+      }
+    ],
+    [
       EntityType.CALCULATED_FIELD,
       {
         type: 'entity.type-calculated-field',
@@ -665,6 +677,12 @@ export const entityTypeResources = new Map<EntityType, EntityTypeResource<BaseDa
     ],
     [
       EntityType.ANDROID_APP_VERSION,
+      {
+        helpLinkId: 'mobileApplication'
+      }
+    ],
+    [
+      EntityType.ANDROID_APP_DISPLAY,
       {
         helpLinkId: 'mobileApplication'
       }

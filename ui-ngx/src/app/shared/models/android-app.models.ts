@@ -18,6 +18,7 @@ import { BaseData } from '@shared/models/base-data';
 import { TenantId } from '@shared/models/id/tenant-id';
 import { AndroidAppId } from '@shared/models/id/android-app-id';
 import { AndroidAppVersionId } from '@shared/models/id/android-app-version-id';
+import { AndroidAppDisplayId } from '@shared/models/id/android-app-display-id';
 
 export enum AndroidAppStatus {
   ACTIVE = 'ACTIVE',
@@ -79,4 +80,26 @@ export interface AndroidAppUpdateInfo {
   releaseNotes?: string;
   apkUrl?: string;
   forceUpdate?: boolean;
+}
+
+export enum AndroidAppDisplayPlatform {
+  ANDROID = 'ANDROID',
+  IOS = 'IOS'
+}
+
+export const androidAppDisplayPlatformTranslations = new Map<AndroidAppDisplayPlatform, string>(
+  [
+    [AndroidAppDisplayPlatform.ANDROID, 'androidapp.platform-type-values.android'],
+    [AndroidAppDisplayPlatform.IOS, 'androidapp.platform-type-values.ios'],
+  ]
+);
+
+export interface AndroidAppDisplay extends BaseData<AndroidAppDisplayId> {
+  tenantId?: TenantId;
+  platformType: AndroidAppDisplayPlatform;
+  appName: string;
+  downloadUrl: string;
+  showOnHome: boolean;
+  sortOrder: number;
+  updatedTime?: number;
 }

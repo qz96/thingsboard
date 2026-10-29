@@ -71,6 +71,7 @@ export enum MenuId {
   mobile_bundles = 'mobile_bundles',
   mobile_qr_code_widget = 'mobile_qr_code_widget',
   android_apps = 'android_apps',
+  android_app_displays = 'android_app_displays',
   platform_devices = 'platform_devices',
   region_viewers = 'region_viewers',
   settings = 'settings',
@@ -350,6 +351,16 @@ export const menuSectionMap = new Map<MenuId, MenuSection>([
       type: 'link',
       path: '/android-apps',
       icon: 'android'
+    }
+  ],
+  [
+    MenuId.android_app_displays,
+    {
+      id: MenuId.android_app_displays,
+      name: 'androidapp.displays',
+      type: 'link',
+      path: '/android-apps/displays',
+      icon: 'qr_code'
     }
   ],
   [
@@ -810,6 +821,7 @@ const defaultUserMenuMap = new Map<Authority, MenuReference[]>([
         ]
       },
       {id: MenuId.android_apps},
+      {id: MenuId.android_app_displays},
       {
         id: MenuId.settings,
         pages: [

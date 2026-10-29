@@ -86,6 +86,7 @@ public class EntityIdFactory {
             case AI_MODEL -> new AiModelId(uuid);
             case ANDROID_APP -> new AndroidAppId(uuid);
             case ANDROID_APP_VERSION -> new AndroidAppVersionId(uuid);
+            case ANDROID_APP_DISPLAY -> new AndroidAppDisplayId(uuid);
         };
     }
 

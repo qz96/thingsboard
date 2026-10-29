@@ -21,6 +21,7 @@ import { MenuId } from '@core/services/menu.models';
 import { EntitiesTableComponent } from '@home/components/entity/entities-table.component';
 import { AndroidAppTableConfigResolver } from '@home/pages/androidapp/android-app-table-config.resolver';
 import { AndroidAppVersionTableConfigResolver } from '@home/pages/androidapp/android-app-version-table-config.resolver';
+import { AndroidAppDisplayTableConfigResolver } from '@home/pages/androidapp/android-app-display-table-config.resolver';
 import { BreadCrumbConfig } from '@shared/components/breadcrumb';
 
 export const androidAppRoutes: Routes = [
@@ -57,6 +58,21 @@ export const androidAppRoutes: Routes = [
         resolve: {
           entitiesTableConfig: AndroidAppVersionTableConfigResolver
         }
+      },
+      {
+        path: 'displays',
+        component: EntitiesTableComponent,
+        data: {
+          breadcrumb: {
+            label: 'androidapp.displays',
+            icon: 'qr_code'
+          } as BreadCrumbConfig<EntitiesTableComponent>,
+          auth: [Authority.SYS_ADMIN],
+          title: 'androidapp.displays',
+        },
+        resolve: {
+          entitiesTableConfig: AndroidAppDisplayTableConfigResolver
+        }
       }
     ]
   }
@@ -65,7 +81,8 @@ export const androidAppRoutes: Routes = [
 @NgModule({
   providers: [
     AndroidAppTableConfigResolver,
-    AndroidAppVersionTableConfigResolver
+    AndroidAppVersionTableConfigResolver,
+    AndroidAppDisplayTableConfigResolver
   ],
   imports: [RouterModule.forChild(androidAppRoutes)],
   exports: [RouterModule]

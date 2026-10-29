@@ -107,6 +107,18 @@
       }
     }
 
+    tb-app-download-bell {
+      ::ng-deep {
+        .mat-mdc-icon-button {
+          color: #1A365D;
+
+          .mat-icon {
+            color: #1A365D;
+          }
+        }
+      }
+    }
+
     tb-user-menu {
       ::ng-deep {
         .mat-mdc-icon-button {

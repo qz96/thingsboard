@@ -88,3 +88,30 @@ CREATE INDEX IF NOT EXISTS idx_tb_android_app_version_app_created_time ON tb_and
 -- At most one PUBLISHED version per app; enforced by service layer, backed up here;
 CREATE UNIQUE INDEX IF NOT EXISTS uq_tb_android_app_version_published
     ON tb_android_app_version(app_id) WHERE status = 'PUBLISHED';
+
+CREATE TABLE IF NOT EXISTS tb_android_app_display (
+    id uuid NOT NULL CONSTRAINT tb_android_app_display_pkey PRIMARY KEY,
+    created_time bigint NOT NULL,
+    updated_time bigint,
+    tenant_id uuid NOT NULL,
+    platform_type varchar(32) NOT NULL DEFAULT 'ANDROID',
+    app_name varchar(255) NOT NULL,
+    download_url varchar(2048) NOT NULL,
+    show_on_home boolean NOT NULL DEFAULT false,
+    sort_order int NOT NULL DEFAULT 0
+);
+
+COMMENT ON TABLE tb_android_app_display IS '安卓端管理-首页展示配置（二维码根据 download_url 由前端生成）';
+COMMENT ON COLUMN tb_android_app_display.id IS '主键 UUID';
+COMMENT ON COLUMN tb_android_app_display.created_time IS '创建时间（epoch 毫秒）';
+COMMENT ON COLUMN tb_android_app_display.updated_time IS '更新时间（epoch 毫秒）';
+COMMENT ON COLUMN tb_android_app_display.tenant_id IS '租户 ID';
+COMMENT ON COLUMN tb_android_app_display.platform_type IS '平台类型：ANDROID-安卓 / IOS-苹果（预留，当前使用 ANDROID）';
+COMMENT ON COLUMN tb_android_app_display.app_name IS '应用名称（首页展示名）';
+COMMENT ON COLUMN tb_android_app_display.download_url IS '下载路径（二维码内容）';
+COMMENT ON COLUMN tb_android_app_display.show_on_home IS '是否展示到首页：true-展示 / false-不展示（默认）';
+COMMENT ON COLUMN tb_android_app_display.sort_order IS '首页排序，数值越小越靠前';
+
+CREATE INDEX IF NOT EXISTS idx_tb_android_app_display_tenant_created_time ON tb_android_app_display(tenant_id, created_time DESC);
+
+CREATE INDEX IF NOT EXISTS idx_tb_android_app_display_tenant_show_on_home ON tb_android_app_display(tenant_id, show_on_home, sort_order);

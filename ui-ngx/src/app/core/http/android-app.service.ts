@@ -20,7 +20,7 @@ import { defaultHttpOptionsFromConfig, RequestConfig } from '@core/http/http-uti
 import { Observable } from 'rxjs';
 import { PageLink } from '@shared/models/page/page-link';
 import { PageData } from '@shared/models/page/page-data';
-import { AndroidApp, AndroidAppUpdateInfo, AndroidAppVersion } from '@shared/models/android-app.models';
+import { AndroidApp, AndroidAppDisplay, AndroidAppUpdateInfo, AndroidAppVersion } from '@shared/models/android-app.models';
 
 @Injectable({
   providedIn: 'root'
@@ -75,6 +75,31 @@ export class AndroidAppService {
   public checkAppUpdate(pkgName: string, versionCode: number, config?: RequestConfig): Observable<AndroidAppUpdateInfo> {
     return this.http.get<AndroidAppUpdateInfo>(`/api/noauth/android/app/check?pkgName=${pkgName}&versionCode=${versionCode}`,
       defaultHttpOptionsFromConfig(config));
+  }
+
+  public saveAndroidAppDisplay(androidAppDisplay: AndroidAppDisplay, config?: RequestConfig): Observable<AndroidAppDisplay> {
+    return this.http.post<AndroidAppDisplay>(`/api/android/app/display`, androidAppDisplay, defaultHttpOptionsFromConfig(config));
+  }
+
+  public getAndroidAppDisplays(pageLink: PageLink, config?: RequestConfig): Observable<PageData<AndroidAppDisplay>> {
+    return this.http.get<PageData<AndroidAppDisplay>>(`/api/android/app/display${pageLink.toQuery()}`, defaultHttpOptionsFromConfig(config));
+  }
+
+  public getAndroidAppDisplayById(id: string, config?: RequestConfig): Observable<AndroidAppDisplay> {
+    return this.http.get<AndroidAppDisplay>(`/api/android/app/display/${id}`, defaultHttpOptionsFromConfig(config));
+  }
+
+  public setAndroidAppDisplayShowOnHome(id: string, showOnHome: boolean, config?: RequestConfig): Observable<AndroidAppDisplay> {
+    return this.http.put<AndroidAppDisplay>(`/api/android/app/display/${id}/showOnHome/${showOnHome}`,
+      null, defaultHttpOptionsFromConfig(config));
+  }
+
+  public deleteAndroidAppDisplay(id: string, config?: RequestConfig): Observable<void> {
+    return this.http.delete<void>(`/api/android/app/display/${id}`, defaultHttpOptionsFromConfig(config));
+  }
+
+  public getAndroidAppDisplaysForHome(config?: RequestConfig): Observable<AndroidAppDisplay[]> {
+    return this.http.get<AndroidAppDisplay[]>(`/api/noauth/android/app/display/home`, defaultHttpOptionsFromConfig(config));
   }
 
 }

@@ -23,6 +23,8 @@ import { AndroidAppRoutingModule } from '@home/pages/androidapp/android-app-rout
 import { AndroidAppDialogComponent } from '@home/pages/androidapp/android-app-dialog.component';
 import { AndroidAppVersionComponent } from '@home/pages/androidapp/android-app-version.component';
 import { AndroidAppVersionDialogComponent } from '@home/pages/androidapp/android-app-version-dialog.component';
+import { AndroidAppDisplayComponent } from '@home/pages/androidapp/android-app-display.component';
+import { AndroidAppDisplayDialogComponent } from '@home/pages/androidapp/android-app-display-dialog.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import { AndroidAppVersionDialogComponent } from '@home/pages/androidapp/android
     AndroidAppDialogComponent,
     AndroidAppVersionComponent,
     AndroidAppVersionDialogComponent,
+    AndroidAppDisplayComponent,
+    AndroidAppDisplayDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -40,6 +44,7 @@ import { AndroidAppVersionDialogComponent } from '@home/pages/androidapp/android
   exports: [
     AndroidAppDialogComponent,
     AndroidAppVersionDialogComponent,
+    AndroidAppDisplayDialogComponent,
   ]
 })
 export class AndroidAppModule { }

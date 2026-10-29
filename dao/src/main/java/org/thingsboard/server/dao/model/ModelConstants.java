@@ -471,6 +471,7 @@ public class ModelConstants {
      */
     public static final String ANDROID_APP_TABLE_NAME = "tb_android_app";
     public static final String ANDROID_APP_VERSION_TABLE_NAME = "tb_android_app_version";
+    public static final String ANDROID_APP_DISPLAY_TABLE_NAME = "tb_android_app_display";
     public static final String UPDATED_TIME_PROPERTY = "updated_time";
     public static final String ANDROID_APP_TITLE_PROPERTY = "title";
     public static final String ANDROID_APP_PKG_NAME_PROPERTY = "pkg_name";
@@ -489,6 +490,11 @@ public class ModelConstants {
     public static final String ANDROID_APP_VERSION_PREVIEW_URL_PROPERTY = "preview_url";
     public static final String ANDROID_APP_VERSION_FORCE_UPDATE_PROPERTY = "force_update";
     public static final String ANDROID_APP_VERSION_STATUS_PROPERTY = "status";
+    public static final String ANDROID_APP_DISPLAY_PLATFORM_TYPE_PROPERTY = "platform_type";
+    public static final String ANDROID_APP_DISPLAY_APP_NAME_PROPERTY = "app_name";
+    public static final String ANDROID_APP_DISPLAY_DOWNLOAD_URL_PROPERTY = "download_url";
+    public static final String ANDROID_APP_DISPLAY_SHOW_ON_HOME_PROPERTY = "show_on_home";
+    public static final String ANDROID_APP_DISPLAY_SORT_ORDER_PROPERTY = "sort_order";
 
     /**
      * Mobile application bundle constants.
