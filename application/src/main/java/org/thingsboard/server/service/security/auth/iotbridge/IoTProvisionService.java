@@ -66,7 +66,6 @@ public class IoTProvisionService {
 
     public static final String WATER_USER_ID = "waterUserId";
     public static final String WATER_PROJECT_ID = "waterProjectId";
-    public static final String WATER_PRIMARY_ADMIN = "waterPrimaryAdmin";
     public static final String WATER_EMAIL = "waterEmail";
     public static final String WATER_ORG_ID = "waterOrgId";
     public static final String WATER_AREA_ID = "waterAreaId";
@@ -112,10 +111,8 @@ public class IoTProvisionService {
 
         Authority targetAuthority = roles.stream().anyMatch(r -> ROLE_PROJECT_ADMIN.equalsIgnoreCase(r))
                 ? Authority.TENANT_ADMIN : Authority.TENANT_VIEWER;
-        boolean primaryAdmin = Boolean.parseBoolean(String.valueOf(claims.getOrDefault("primaryAdmin", "false")));
 
         Tenant tenant = resolveTenant(projectId, projectName != null ? projectName : userName, claims);
-        Authority effectiveAuthority = resolveEffectiveAuthority(tenant, waterUserId, targetAuthority, projectId, primaryAdmin);
 
         // 1. Existing mapping -> sync role only
         UUID mappedUserId = ssoAccountDao.findUserId(waterUserId, projectId);
@@ -125,7 +122,7 @@ public class IoTProvisionService {
                 throw new ThingsboardException("SSO mapping points to a missing account [" + mappedUserId + "]",
                         ThingsboardErrorCode.GENERAL);
             }
-            syncRole(tenant, existing, effectiveAuthority, projectId, roles, waterUserId);
+            syncRole(tenant, existing, targetAuthority, projectId, roles, waterUserId);
             ssoAccountDao.upsert(waterUserId, projectId, existing.getId().getId(), currentAuthority(existing).name());
             return new ProvisionResult(existing, tenant, false);
         }
@@ -140,14 +137,14 @@ public class IoTProvisionService {
                         ThingsboardErrorCode.BAD_REQUEST_PARAMS);
             }
             ssoAccountDao.upsert(waterUserId, projectId, existing.getId().getId(), currentAuthority(existing).name());
-            syncRole(tenant, existing, effectiveAuthority, projectId, roles, waterUserId);
+            syncRole(tenant, existing, targetAuthority, projectId, roles, waterUserId);
             return new ProvisionResult(existing, tenant, false);
         }
 
         // 3. Create a new account
         User user = new User();
         user.setTenantId(tenant.getId());
-        user.setAuthority(effectiveAuthority);
+        user.setAuthority(targetAuthority);
         user.setEmail(email);
         user.setFirstName(firstName != null ? firstName : userName);
         var info = JacksonUtil.newObjectNode();
@@ -160,11 +157,11 @@ public class IoTProvisionService {
         user.setAdditionalInfo(info);
         user = userService.saveUser(tenant.getId(), user);
 
-        ssoAccountDao.upsert(waterUserId, projectId, user.getId().getId(), effectiveAuthority.name());
+        ssoAccountDao.upsert(waterUserId, projectId, user.getId().getId(), targetAuthority.name());
         activateCredentials(tenant.getId(), user, waterUserId);
 
         log.info("[SSO] Created account [{}] as {} in project [{}] (tenant [{}])",
-                email, effectiveAuthority, projectId, tenant.getTitle());
+                email, targetAuthority, projectId, tenant.getTitle());
         return new ProvisionResult(user, tenant, true);
     }
 
@@ -188,95 +185,22 @@ public class IoTProvisionService {
         return tenant;
     }
 
-    /**
-     * Single-administrator rule: when the project already has an administrator, another PROJECT_ADMIN account
-     * only takes over if it is explicitly flagged as primary or has a "smaller" water user id (deterministic,
-     * so that repeated logins converge instead of flipping the role back and forth).
-     */
-    private Authority resolveEffectiveAuthority(Tenant tenant, String waterUserId, Authority targetAuthority,
-                                                String projectId, boolean primaryAdmin) {
-        if (targetAuthority != Authority.TENANT_ADMIN) {
-            return targetAuthority;
-        }
-        List<UUID> adminIds = ssoAccountDao.findUserIdsByAuthority(tenant.getId().getId(), Authority.TENANT_ADMIN.name());
-
-        // A sticky "primary administrator" designation wins over the deterministic id based tie-break,
-        // otherwise a non-primary account with a smaller id would take the role back on its next login.
-        String recordedPrimary = readTenantPrimaryAdmin(tenant);
-        if (primaryAdmin) {
-            if (recordedPrimary == null || !recordedPrimary.equalsIgnoreCase(waterUserId)) {
-                recordTenantPrimaryAdmin(tenant, waterUserId);
-            }
-        } else if (recordedPrimary != null && !recordedPrimary.equalsIgnoreCase(waterUserId)) {
-            log.info("[SSO] Project [{}] has primary administrator [{}]; '{}' stays TENANT_VIEWER",
-                    projectId, recordedPrimary, waterUserId);
-            return Authority.TENANT_VIEWER;
-        }
-
-        if (adminIds.isEmpty()) {
-            return Authority.TENANT_ADMIN;
-        }
-        String currentAdminWaterId = ssoAccountDao.findWaterUserIdByUserId(adminIds.get(0));
-        if (currentAdminWaterId != null && currentAdminWaterId.equalsIgnoreCase(waterUserId)) {
-            return Authority.TENANT_ADMIN;
-        }
-        boolean takeover = primaryAdmin
-                || currentAdminWaterId == null
-                || waterUserId.compareToIgnoreCase(currentAdminWaterId) < 0;
-        if (!takeover) {
-            log.warn("[SSO] Project [{}] already has administrator [{}]; '{}' keeps TENANT_VIEWER " +
-                    "(multiple PROJECT_ADMIN in assertion)", projectId, currentAdminWaterId, waterUserId);
-            return Authority.TENANT_VIEWER;
-        }
-        return Authority.TENANT_ADMIN;
-    }
-
-    private String readTenantPrimaryAdmin(Tenant tenant) {
-        if (tenant.getAdditionalInfo() == null || !tenant.getAdditionalInfo().hasNonNull(WATER_PRIMARY_ADMIN)) {
-            return null;
-        }
-        String value = tenant.getAdditionalInfo().get(WATER_PRIMARY_ADMIN).asText(null);
-        return value == null || value.isBlank() ? null : value;
-    }
-
-    private void recordTenantPrimaryAdmin(Tenant tenant, String waterUserId) {
-        var info = tenant.getAdditionalInfo() instanceof com.fasterxml.jackson.databind.node.ObjectNode node
-                ? node : JacksonUtil.newObjectNode();
-        info.put(WATER_PRIMARY_ADMIN, waterUserId);
-        tenant.setAdditionalInfo(info);
-        tenantService.saveTenant(tenant);
-        log.info("[SSO] Recorded primary administrator [{}] for tenant [{}]", waterUserId, tenant.getTitle());
-    }
-
     private void syncRole(Tenant tenant, User user, Authority targetAuthority, String projectId, List<String> roles,
                           String waterUserId) {
         Authority current = currentAuthority(user);
         if (current == targetAuthority) {
             return;
         }
-        List<UUID> adminIds = ssoAccountDao.findUserIdsByAuthority(tenant.getId().getId(), Authority.TENANT_ADMIN.name());
 
         if (targetAuthority == Authority.TENANT_ADMIN) {
-            // transfer: demote the previous administrator(s), then promote this account
-            for (UUID adminId : adminIds) {
-                if (!adminId.equals(user.getId().getId())) {
-                    User previousAdmin = userService.findUserById(tenant.getId(), new UserId(adminId));
-                    ssoAccountDao.updateAuthority(adminId, Authority.TENANT_VIEWER.name());
-                    if (previousAdmin != null) {
-                        previousAdmin.setAuthority(Authority.TENANT_VIEWER);
-                    }
-                    logEntityActionService.logEntityAction(tenant.getId(), new UserId(adminId),
-                            previousAdmin != null ? previousAdmin : user, ActionType.UPDATED, user,
-                            "SSO role transfer: TENANT_ADMIN -> TENANT_VIEWER (replaced by " + user.getEmail() + ")");
-                    log.warn("[SSO] Transferred administrator of tenant [{}] from [{}] to [{}]",
-                            tenant.getTitle(), adminId, user.getEmail());
-                }
-            }
+            // Multiple administrators per tenant are allowed: every PROJECT_ADMIN account is promoted on its own
+            // assertion, and no other account is touched. This keeps the sync free of cross-account side effects.
             ssoAccountDao.updateAuthority(user.getId().getId(), Authority.TENANT_ADMIN.name());
             user.setAuthority(Authority.TENANT_ADMIN);
             logEntityActionService.logEntityAction(tenant.getId(), user.getId(), user, ActionType.UPDATED, user,
                     "SSO role promotion: " + current + " -> TENANT_ADMIN (PROJECT_ADMIN granted)");
         } else {
+            List<UUID> adminIds = ssoAccountDao.findUserIdsByAuthority(tenant.getId().getId(), Authority.TENANT_ADMIN.name());
             if (adminIds.size() <= 1 && adminIds.contains(user.getId().getId())) {
                 log.warn("[SSO] Last admin protection: [{}] keeps TENANT_ADMIN although PROJECT_ADMIN is absent " +
                         "(tenant [{}], project [{}], roles {})", user.getEmail(), tenant.getTitle(), projectId, roles);

@@ -99,13 +99,6 @@ public class SsoAccountDao {
         return rows.isEmpty() ? null : (UUID) rows.get(0);
     }
 
-    public String findWaterUserIdByUserId(UUID userId) {
-        List<?> rows = em.createNativeQuery("SELECT water_user_id FROM tb_sso_account WHERE tb_user_id = :userId")
-                .setParameter("userId", userId)
-                .getResultList();
-        return rows.isEmpty() ? null : (String) rows.get(0);
-    }
-
     public List<UUID> findUserIdsByAuthority(UUID tenantId, String authority) {
         @SuppressWarnings("unchecked")
         List<UUID> rows = em.createNativeQuery(

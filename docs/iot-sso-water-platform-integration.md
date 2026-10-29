@@ -235,7 +235,6 @@ Content-Type: application/json
 | `projectId`                  | 顶层            | ✅ **新增** | 项目/区域唯一标识，**租户幂等键**                                          |
 | `projectName`                | 顶层            | 建议       | 项目/区域显示名，租户标题来源                                              |
 | `roles`                      | 顶层            | ✅ **新增** | 角色编码数组，见 §5                                                  |
-| `primaryAdmin`               | 顶层            | 可选       | 布尔。当同一项目有多个 `PROJECT_ADMIN` 时，用 `true` 显式指定由谁担任区域管理员（见 §5.2） |
 | `profile.login`              | `profile`     | ✅        | 水务登录名（仅用于展示与排查，不再作为 IoT 登录名）                                 |
 | `profile.userName`           | `profile`     | ✅        | 用户显示名 / 项目名（旧版用于租户标题）                                        |
 | `profile.firstName`          | `profile`     | 建议       | 姓名                                                           |
@@ -332,7 +331,7 @@ sso-{sub}@{projectId}.iot
 
 ---
 
-## 5. 角色映射与「唯一区域管理员」语义
+## 5. 角色映射与管理员同步规则
 
 ### 5.1 映射表
 
@@ -347,23 +346,24 @@ sso-{sub}@{projectId}.iot
 > - `roles` 为空数组时按 `TENANT_VIEWER` 处理。
 > 若排水平台实际编码不是 `PROJECT_ADMIN`，请告知物联网平台侧调整常量。
 
-### 5.2 唯一管理员与接管规则
+### 5.2 多管理员同步规则
 
-物联网平台保证**每个租户同一时刻最多一个区域管理员**。当断言里出现**多个** `PROJECT_ADMIN` 时，按以下顺序确定唯一管理员：
+**同一项目可以有多个区域管理员**：每个 `PROJECT_ADMIN` 账号都会成为 `TENANT_ADMIN`，各自独立，互不影响。
 
-1. 断言中 `primaryAdmin=true` 的账号优先；
-2. 否则取 `sub`（水务用户 ID）**字典序最小**的账号；
-3. 其余 `PROJECT_ADMIN` 账号一律按 `TENANT_VIEWER` 处理（保持只读），并记录 WARN 日志。
+每个账号的角色只由**自己的断言**决定，同步规则如下：
 
-转让/变更规则：
+| 情形 | 行为 |
+|---|---|
+| 断言含 `PROJECT_ADMIN`，该账号当前不是管理员 | 升为 `TENANT_ADMIN`（不触碰其他管理员） |
+| 断言不含 `PROJECT_ADMIN`，该账号当前是管理员，且租户内还有其他管理员 | 降为 `TENANT_VIEWER` |
+| 断言不含 `PROJECT_ADMIN`，该账号是租户内**唯一**管理员 | **不降级**，保留 `TENANT_ADMIN` 并记录 WARN（防止区域无人可管） |
+| 断言与库中角色一致 | 不变更 |
 
-| 场景                                    | 行为                                              |
-| ------------------------------------- | ----------------------------------------------- |
-| 当前管理员仍在 `roles` 中，且仍满足上面的优先级          | 不变更                                             |
-| 当前管理员失去 `PROJECT_ADMIN`，且存在更高优先级的候选账号 | 候选账号下次登录时接管，原管理员降级为只读                           |
-| 当前管理员是租户内**唯一**管理员且失去 `PROJECT_ADMIN` | **不降级**（last-admin protection），记录 WARN，防止区域无人可管 |
+要点：
 
-> **对接方要求**：`roles` 必须是「当前生效」的角色快照。若同一项目确实只能有一个管理员，建议直接只授予一个人 `PROJECT_ADMIN`，避免依赖优先级仲裁；若必须多人持有，请用 `primaryAdmin` 明确指定。
+1. **无跨账号副作用**：A 登录不会改变 B 的角色，因此不会出现"两个管理员互相降级"。
+2. **权限回收时机**：管理员在排水平台被撤销后，其物联网平台权限会在**本人下次跳转登录时**生效。若需立即回收，请在物联网平台侧手工调整（或后续启用全量对账方案）。
+3. **管理员数量不设上限**，但每个账号必须由 `(sub, projectId)` 唯一确定，不会重复建号。
 
 ### 5.3 审计
 
@@ -445,11 +445,12 @@ sso-{sub}@{projectId}.iot
 | 7 | 只读权限生效 | 用用例 6 的 `token` 调 `GET /api/tenant/devices?pageSize=5&page=0` | `200` |
 | 8 | 只读不可写 | 用用例 6 的 `token` 调 `POST /api/device` | `403` |
 | 9 | 令牌续期 | `POST /api/auth/token`，body 带 `refreshToken` | `200`，返回新 `token`；旧 `token` 调用返回 `401` |
-| 10 | 管理员转让 | 另一个人带 `primaryAdmin=true` + PROJECT_ADMIN 调 `exchange` | `200`，新管理员 `scope=TENANT_ADMIN` |
-| 11 | 原管理员降级 | 原管理员再调 `exchange` | `200`，`scope=TENANT_VIEWER`（已被接管） |
-| 12 | 最后管理员保护 | 当前管理员断言里去掉 PROJECT_ADMIN 再调 `provision` | 仍返回 `authority=TENANT_ADMIN`（日志有 WARN），避免区域无人可管 |
-| 13 | 缺 projectId | 断言不带 `projectId` | `400`，`errorCode=31`，`message=Assertion projectId is missing` |
-| 14 | 错误签名 | 用另一把私钥签名 | `401`，`errorCode=10`，`message=Invalid assertion` |
+| 10 | 多管理员并存 | 第二个 `PROJECT_ADMIN` 账号调 `provision` | `200`，`authority=TENANT_ADMIN`，前一个管理员**不受影响** |
+| 11 | 多管理员取令牌 | 两个管理员分别 `exchange` | 均返回 `scope=TENANT_ADMIN` |
+| 12 | 单个管理员撤销 | 其中一个管理员断言去掉 PROJECT_ADMIN 后调 `provision` | `authority=TENANT_VIEWER`（因为还有其他管理员） |
+| 13 | 最后管理员保护 | 仅剩的管理员断言去掉 PROJECT_ADMIN 后调 `provision` | 仍为 `authority=TENANT_ADMIN`（日志 WARN），避免区域无人可管 |
+| 14 | 缺 projectId | 断言不带 `projectId` | `400`，`errorCode=31`，`message=Assertion projectId is missing` |
+| 15 | 错误签名 | 用另一把私钥签名 | `401`，`errorCode=10`，`message=Invalid assertion` |
 
 ### 7.3 排查指引
 
@@ -481,7 +482,7 @@ sso-{sub}@{projectId}.iot
 | 4 | `roles` 是否可能为空数组（例如新入职未分配角色）？                              | 空数组按「区域运维」处理，请确认   |
 | 5 | 是否需要在跳转时携带业务上下文（如默认打开某台设备/某个仪表板）？                          | 决定是否增加 `ctx` claim |
 | 6 | 断言签名公钥是否需要支持轮换（多把公钥并存）？                                    | 决定验签实现是否要升级        |
-| 7 | 同一项目是否会出现多个 `PROJECT_ADMIN`？若会，是否能指定唯一负责人（`primaryAdmin`）？ | 决定是否需要仲裁规则         |
+| 7 | 同一项目是否会出现多个 `PROJECT_ADMIN`？若会，是否需要「立即回收已撤销管理员的权限」（需断言携带全量管理员列表）？ | 决定是否升级为全量对账方案 |
 
 ---
 
