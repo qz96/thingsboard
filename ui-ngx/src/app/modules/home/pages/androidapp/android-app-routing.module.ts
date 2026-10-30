@@ -58,23 +58,22 @@ export const androidAppRoutes: Routes = [
         resolve: {
           entitiesTableConfig: AndroidAppVersionTableConfigResolver
         }
-      },
-      {
-        path: 'displays',
-        component: EntitiesTableComponent,
-        data: {
-          breadcrumb: {
-            label: 'androidapp.displays',
-            icon: 'qr_code'
-          } as BreadCrumbConfig<EntitiesTableComponent>,
-          auth: [Authority.SYS_ADMIN],
-          title: 'androidapp.displays',
-        },
-        resolve: {
-          entitiesTableConfig: AndroidAppDisplayTableConfigResolver
-        }
       }
     ]
+  },
+  {
+    path: 'mobile-downloads',
+    component: EntitiesTableComponent,
+    data: {
+      breadcrumb: {
+        menuId: MenuId.android_app_displays
+      },
+      auth: [Authority.SYS_ADMIN],
+      title: 'androidapp.displays',
+    },
+    resolve: {
+      entitiesTableConfig: AndroidAppDisplayTableConfigResolver
+    }
   }
 ];
 

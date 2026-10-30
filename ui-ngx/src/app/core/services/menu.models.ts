@@ -359,7 +359,7 @@ export const menuSectionMap = new Map<MenuId, MenuSection>([
       id: MenuId.android_app_displays,
       name: 'androidapp.displays',
       type: 'link',
-      path: '/android-apps/displays',
+      path: '/mobile-downloads',
       icon: 'qr_code'
     }
   ],
