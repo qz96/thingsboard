@@ -13,7 +13,8 @@
       <span translate>admin.rule-chain-sync</span>
     </button>
   </mat-card-header>
-  <mat-progress-bar color="warn" mode="indeterminate" *ngIf="syncing">
+  <mat-progress-bar *ngIf="syncing && taskId" mode="determinate" [value]="progressPercent"></mat-progress-bar>
+  <mat-progress-bar color="warn" mode="indeterminate" *ngIf="syncing && !taskId">
   </mat-progress-bar>
   <div style="height: 4px;" *ngIf="!syncing"></div>
   <mat-card-content>
@@ -61,12 +62,36 @@
             </mat-select>
           </mat-form-field>
 
+          <mat-form-field>
+            <mat-label translate>admin.existing-target-strategy</mat-label>
+            <mat-select formControlName="existingTargetStrategy">
+              <mat-option [value]="ExistingTargetStrategy.OVERWRITE_UNCHANGED">
+                {{ 'admin.strategy-overwrite-unchanged' | translate }}
+              </mat-option>
+              <mat-option [value]="ExistingTargetStrategy.OVERWRITE_ALWAYS">
+                {{ 'admin.strategy-overwrite-always' | translate }}
+              </mat-option>
+              <mat-option [value]="ExistingTargetStrategy.SKIP_EXISTING">
+                {{ 'admin.strategy-skip-existing' | translate }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
           <mat-checkbox formControlName="dryRun" class="dry-run">
             <span translate>admin.dry-run</span>
           </mat-checkbox>
         </div>
       </fieldset>
     </form>
+
+    <div *ngIf="taskId" class="task-progress">
+      <span class="task-text">
+        {{ taskProcessed }} / {{ taskTotal }}
+        <ng-container *ngIf="taskCurrentTenant"> · {{ taskCurrentTenant }}</ng-container>
+        <ng-container *ngIf="taskStatus === 'DONE'"> · 已完成</ng-container>
+        <ng-container *ngIf="taskStatus === 'FAILED'"> · 失败</ng-container>
+      </span>
+    </div>
 
     <div *ngIf="result" class="result-section">
       <mat-divider></mat-divider>
@@ -76,6 +101,8 @@
       <div *ngIf="result.sourceSelfContained !== false" class="summary">
         <span class="chip created">Created: {{ result.created || 0 }}</span>
         <span class="chip updated">Updated: {{ result.updated || 0 }}</span>
+        <span class="chip unchanged">Unchanged: {{ result.unchanged || 0 }}</span>
+        <span class="chip drifted">Drifted: {{ result.drifted || 0 }}</span>
         <span class="chip skipped">Skipped: {{ result.skipped || 0 }}</span>
         <span class="chip failed">Failed: {{ result.failed || 0 }}</span>
         <span class="chip total">Total tenants: {{ result.totalTenants || 0 }}</span>

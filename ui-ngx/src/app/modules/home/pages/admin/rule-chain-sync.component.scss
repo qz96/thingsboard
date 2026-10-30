@@ -89,3 +89,29 @@
     }
   }
 }
+.task-progress {
+  padding: 8px 12px 0 24px;
+
+  .task-text {
+    font-size: 12px;
+    opacity: 0.75;
+  }
+}
+
+.summary .chip.unchanged {
+  color: #546e7a;
+}
+
+.summary .chip.drifted {
+  color: #e37400;
+}
+
+.status-chip.unchanged {
+  background: rgba(84, 110, 122, 0.12);
+  color: #546e7a;
+}
+
+.status-chip.drifted {
+  background: rgba(227, 116, 0, 0.15);
+  color: #e37400;
+}

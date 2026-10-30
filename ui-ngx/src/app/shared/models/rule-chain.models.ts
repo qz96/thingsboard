@@ -98,7 +98,20 @@ export enum TenantSyncStatus {
   CREATED = 'CREATED',
   UPDATED = 'UPDATED',
   SKIPPED = 'SKIPPED',
-  FAILED = 'FAILED'
+  FAILED = 'FAILED',
+  /** 目标已是当前模板版本，无需重复导入 */
+  UNCHANGED = 'UNCHANGED',
+  /** 目标被本地修改，按 OVERWRITE_UNCHANGED 跳过，需人工确认或强推 */
+  DRIFTED = 'DRIFTED'
+}
+
+export enum ExistingTargetStrategy {
+  /** 只覆盖上次同步后未被本地修改的租户（默认） */
+  OVERWRITE_UNCHANGED = 'OVERWRITE_UNCHANGED',
+  /** 无条件覆盖 */
+  OVERWRITE_ALWAYS = 'OVERWRITE_ALWAYS',
+  /** 已存在即跳过 */
+  SKIP_EXISTING = 'SKIP_EXISTING'
 }
 
 export enum MissingTargetStrategy {
@@ -112,6 +125,9 @@ export interface SyncRuleChainRequest {
   sourceRuleChainName?: string;
   ruleChainType?: string;
   missingTargetStrategy?: MissingTargetStrategy;
+  existingTargetStrategy?: ExistingTargetStrategy;
+  /** 指定目标租户；为空表示全部租户 */
+  tenantIds?: Array<string>;
   dryRun?: boolean;
 }
 
@@ -131,6 +147,26 @@ export interface SyncRuleChainResult {
   updated?: number;
   skipped?: number;
   failed?: number;
+  /** 源链内容 checksum（本次模板版本标识） */
+  sourceChecksum?: string;
+  strategy?: ExistingTargetStrategy;
+  /** 已是当前模板版本、跳过的租户数 */
+  unchanged?: number;
+  /** 被本地修改、跳过等待人工确认的租户数 */
+  drifted?: number;
   tenants?: Array<TenantSyncDetail>;
+}
+
+/** 异步批量同步任务（几十个租户下发时轮询用） */
+export interface RuleChainSyncTask {
+  id: string;
+  status: 'RUNNING' | 'DONE' | 'FAILED';
+  total: number;
+  processed: number;
+  currentTenant?: string;
+  startedAt?: number;
+  finishedAt?: number;
+  message?: string;
+  result?: SyncRuleChainResult;
 }
 
