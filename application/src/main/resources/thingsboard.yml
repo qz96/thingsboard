@@ -1090,6 +1090,13 @@ transport:
       #   mapped = 仅业务键（规则链无需翻译节点）
       #   raw    = 仅原始键（最贴近 TB 原生，业务词汇由规则链按租户/目标自由翻译）
       mode: "${SL651_KEYS_MODE:dual}"
+    ack:
+      # 是否对上行帧回确认帧（M2/M4 模式终端要求）
+      enabled: "${SL651_ACK_ENABLED:true}"
+      # 确认帧结束符：04=EOT 传输结束；1B=ESC 要求终端保持在线
+      terminator: "${SL651_ACK_TERMINATOR:04}"
+      # 不应答的功能码（十六进制逗号分隔），默认排除链路维持报 2F
+      exclude_function_codes: "${SL651_ACK_EXCLUDE_FC:2F}"
   mqtt:
     # Enable/disable mqtt transport protocol.
     enabled: "${MQTT_ENABLED:true}"

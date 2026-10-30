@@ -66,8 +66,9 @@ public class Sl651CommandEncoder {
         ByteBuf buf = Unpooled.buffer();
         buf.writeByte(ControlChar.START_MARKER[0]);
         buf.writeByte(ControlChar.START_MARKER[1]);
-        buf.writeByte(header.centerStation & 0xFF);
+        // 表21：下行帧为「遥测站地址(5) → 中心站地址(1)」，与上行帧顺序相反
         buf.writeBytes(header.stationAddress, 0, 5);
+        buf.writeByte(header.centerStation & 0xFF);
         buf.writeShort(header.password & 0xFFFF);
         buf.writeByte(functionCode & 0xFF);
         buf.writeShort(0x8000 | (bodyLength & 0x0FFF)); // 下行标识 0x8000 + 正文长度
@@ -76,6 +77,8 @@ public class Sl651CommandEncoder {
         if (params != null && params.length > 0) {
             buf.writeBytes(params);
         }
+        // TODO(真机联调): 表21 规定下行帧结束符为 ENQ/ACK/EOT/ESC，此处仍是上行结束符 ETX，
+        //  取值需按实际终端行为确认（EOT 传输结束退出 / ESC 保持在线）后再改，避免误改导致终端不响应。
         buf.writeByte(ControlChar.ETX);
 
         byte[] head = new byte[buf.readableBytes()];
@@ -84,8 +87,9 @@ public class Sl651CommandEncoder {
         int crc = CRC16.calculate(head, 0, head.length);
         ByteBuf out = Unpooled.buffer(head.length + 2);
         out.writeBytes(head);
-        out.writeByte(crc & 0xFF);
+        // 表20/21：校验码高位字节在前（原实现为小端，与规约不符）
         out.writeByte((crc >> 8) & 0xFF);
+        out.writeByte(crc & 0xFF);
 
         byte[] result = new byte[out.readableBytes()];
         out.readBytes(result);

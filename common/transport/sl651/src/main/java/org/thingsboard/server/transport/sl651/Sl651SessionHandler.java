@@ -76,6 +76,8 @@ public class Sl651SessionHandler extends SimpleChannelInboundHandler<SL651Frame>
 
     private volatile Sl651DeviceProfileTransportConfiguration profileConfig = new Sl651DeviceProfileTransportConfiguration();
     private InetSocketAddress inetAddress;
+    /** 当前连接的上下文（用于回写确认帧）；handler 每连接一份，非共享 */
+    private volatile ChannelHandlerContext channelCtx;
 
     public Sl651SessionHandler(Sl651TransportContext context, String address) {
         this.context = context;
@@ -90,6 +92,15 @@ public class Sl651SessionHandler extends SimpleChannelInboundHandler<SL651Frame>
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, SL651Frame frame) {
+        this.channelCtx = ctx;
+
+        // 坏帧不响应、不上报：结构不合法或 CRC 不符均视为「接收无效」，
+        // 按 SL651-2016 6.3.2.1 不做任何应答，由终端自行超时重发（最多 2 次）。
+        if (!frame.isValid() || !frame.isCrcValid()) {
+            log.debug("[{}] 丢弃无效帧: {}", address, frame.getMsg());
+            return;
+        }
+
         // 记录最近一次上行帧头，作为下行命令的回程寻址信息
         lastHeader = new Sl651CommandEncoder.Header(frame.getCenterStationAddress(),
                 frame.getTelemetryStationAddress(), frame.getPassword());
@@ -199,6 +210,8 @@ public class Sl651SessionHandler extends SimpleChannelInboundHandler<SL651Frame>
      */
     private void processFrame(SL651Frame frame) {
         storeRawFrame(frame);
+        // 确认帧在数据上行之前回复：帧已正确接收即应答，与要素是否解析出值无关
+        sendAck(frame);
         java.util.List<TransportProtos.KeyValueProto> kvList = buildKvList(frame);
         if (kvList.isEmpty()) {
             return;
@@ -238,6 +251,33 @@ public class Sl651SessionHandler extends SimpleChannelInboundHandler<SL651Frame>
                         .build())
                 .build();
         transportService.process(sessionInfo, rawAttr, TransportServiceCallback.EMPTY);
+    }
+
+    /**
+     * 回复确认帧（M2/M4 模式终端要求中心站正确接收后应答）。
+     *
+     * 不应答的情形：ack 关闭、CRC/结构无效、功能码在排除列表（默认链路维持报 0x2F）。
+     * 写失败仅记录日志——终端会按规约超时重发，不必重试写入。
+     */
+    private void sendAck(SL651Frame frame) {
+        try {
+            if (!context.shouldAck(frame)) {
+                return;
+            }
+            byte[] ack = context.buildAck(frame);
+            ChannelHandlerContext ctx = channelCtx;
+            if (ack == null || ctx == null || !ctx.channel().isActive()) {
+                return;
+            }
+            ctx.writeAndFlush(Unpooled.wrappedBuffer(ack));
+            if (log.isDebugEnabled()) {
+                log.debug("[{}] 已回确认帧: 功能码=0x{}, 流水号=0x{}", address,
+                        Integer.toHexString(frame.getFunctionCode()).toUpperCase(),
+                        Integer.toHexString(frame.getSerialNumber()).toUpperCase());
+            }
+        } catch (Exception e) {
+            log.warn("[{}] 回写确认帧失败: {}", address, e.getMessage());
+        }
     }
 
     /**
