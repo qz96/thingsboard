@@ -242,13 +242,24 @@ public class Sl651SessionHandler extends SimpleChannelInboundHandler<SL651Frame>
 
     private java.util.List<TransportProtos.KeyValueProto> buildKvList(SL651Frame frame) {
         java.util.List<TransportProtos.KeyValueProto> kvList = new java.util.ArrayList<>();
+        Sl651ElementMappingProvider mapping = context.getElementMappingProvider();
         for (DataElement element : frame.getDataElements()) {
             double value = element.getValue();
             if (Double.isNaN(value)) {
                 continue; // 非法 BCD 数据，跳过
             }
-            // 落库键使用稳定、无语言的要素编码（完整 2 字节数据标识符），由规则链 JS 再翻译为 HJ212 污染因子编码
-            String key = applyKeyPrefix(String.format("%04X", element.getFullIdentifier()));
+            // 键解析优先级：
+            //  1) 表驱动映射（sl_element_mapping，引导符 → HJ212 污染因子编码，如 w21003）——与网关同表；
+            //  2) 未映射 → 回退为完整 2 字节数据标识符（如 FF97），便于事后在映射页补定义。
+            // 由此规则链不再需要硬编码的翻译脚本。
+            String mapped = mapping != null ? mapping.getPollutantCode(element.getGuideByte()) : null;
+            String key = applyKeyPrefix(mapped != null && !mapped.isBlank()
+                    ? mapped
+                    : String.format("%04X", element.getFullIdentifier()));
+            if (log.isDebugEnabled()) {
+                log.debug("[{}] 要素键: 引导符=0x{} → 键={} 值={}", address,
+                        String.format("%02X", element.getGuideByte()), key, value);
+            }
             kvList.add(TransportProtos.KeyValueProto.newBuilder()
                     .setKey(key)
                     .setType(TransportProtos.KeyValueType.DOUBLE_V)

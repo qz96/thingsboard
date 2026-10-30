@@ -15,6 +15,7 @@
  */
 package org.thingsboard.server.transport.sl651;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.thingsboard.server.common.transport.TransportContext;
@@ -32,15 +33,32 @@ public class Sl651TransportContext extends TransportContext {
     @Value("${transport.sl651.token_prefix:sl651}")
     private String tokenPrefix;
 
+    /**
+     * 要素映射提供者（可选注入）。
+     * 单体内嵌模式由 application 模块提供 DB 实现（直查 sl_element_mapping 表）；
+     * 未提供时遥测键保持原始标识符（如 FF97），由规则链自行翻译。
+     */
+    @Autowired(required = false)
+    private Sl651ElementMappingProvider elementMappingProvider;
+
     public String getTokenPrefix() {
         return tokenPrefix;
     }
 
+    public Sl651ElementMappingProvider getElementMappingProvider() {
+        return elementMappingProvider;
+    }
+
     /**
-     * 创建 SL651 解析器（默认配置，可由上层覆盖）
+     * 创建 SL651 解析器。
+     *
+     * 配置与生产网关、golden-case 测试保持一致（SL651GoldenCaseTest）：
+     *  - 宽松结构校验（部分终端长度字段不规范）；
+     *  - CRC 校验开启，大端序（SL651-2016 表20：高字节在前——解析器默认 little 是错的，必须显式 big）；
+     *  - 不做长度字段强校验、允许非标准起始/结束符。
      */
     public SL651Parser createParser() {
-        return new SL651Parser();
+        return new SL651Parser(false, true, false, true, "big");
     }
 
 }

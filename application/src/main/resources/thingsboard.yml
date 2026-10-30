@@ -1081,6 +1081,9 @@ transport:
     bind_port: "${SL651_BIND_PORT:8501}"
     # SL651 读空闲超时（毫秒）：超过该时长未收到终端数据即断开连接
     timeout: "${SL651_TIMEOUT:600000}"
+    mapping:
+      # 要素映射（sl_element_mapping 表）缓存 TTL（秒），到期惰性刷新；表缺失自动降级为原始标识符键
+      cache_ttl_seconds: "${SL651_MAPPING_CACHE_TTL:60}"
   mqtt:
     # Enable/disable mqtt transport protocol.
     enabled: "${MQTT_ENABLED:true}"
