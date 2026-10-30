@@ -62,6 +62,20 @@
             </mat-select>
           </mat-form-field>
 
+          <div class="scope-field">
+            <label class="scope-label" translate>admin.target-scope</label>
+            <mat-radio-group formControlName="targetScope" class="scope-radio">
+              <mat-radio-button value="ALL">{{ 'admin.target-scope-all' | translate }}</mat-radio-button>
+              <mat-radio-button value="CUSTOM">{{ 'admin.target-scope-custom' | translate }}</mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+          <tb-entity-list-select *ngIf="syncFormGroup.get('targetScope').value === 'CUSTOM'"
+                                 formControlName="targetTenants"
+                                 [predefinedEntityType]="'TENANT'"
+                                 [required]="true">
+          </tb-entity-list-select>
+
           <mat-form-field>
             <mat-label translate>admin.existing-target-strategy</mat-label>
             <mat-select formControlName="existingTargetStrategy">

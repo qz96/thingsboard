@@ -115,3 +115,20 @@
   background: rgba(227, 116, 0, 0.15);
   color: #e37400;
 }
+
+.scope-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 6px;
+
+  .scope-label {
+    font-size: 14px;
+    opacity: 0.8;
+  }
+
+  .scope-radio {
+    display: flex;
+    gap: 8px;
+  }
+}

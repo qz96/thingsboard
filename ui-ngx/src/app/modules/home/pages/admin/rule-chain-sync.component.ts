@@ -77,6 +77,8 @@ export class RuleChainSyncComponent implements OnInit, OnDestroy {
       sourceRuleChain: [null, Validators.required],
       missingTargetStrategy: [MissingTargetStrategy.CREATE, Validators.required],
       existingTargetStrategy: [ExistingTargetStrategy.OVERWRITE_UNCHANGED, Validators.required],
+      targetScope: ['ALL'],
+      targetTenants: [null],
       dryRun: [false]
     });
   }
@@ -127,12 +129,23 @@ export class RuleChainSyncComponent implements OnInit, OnDestroy {
       return;
     }
     const formValue = this.syncFormGroup.value;
+    // 同步范围：ALL=全部其他租户（源租户自动排除）；CUSTOM=仅选中的租户
+    let tenantIds: Array<string> = undefined;
+    if (formValue.targetScope === 'CUSTOM') {
+      const selected = formValue.targetTenants?.ids || [];
+      if (selected.length === 0) {
+        this.snackBar.open('请至少选择一个目标租户。', 'OK', { duration: 5000 });
+        return;
+      }
+      tenantIds = selected;
+    }
     const request: SyncRuleChainRequest = {
       sourceTenantId: formValue.sourceTenant.id,
       sourceRuleChainId: formValue.sourceRuleChain.id.id,
       ruleChainType: formValue.ruleChainType,
       missingTargetStrategy: formValue.missingTargetStrategy,
       existingTargetStrategy: formValue.existingTargetStrategy,
+      tenantIds,
       dryRun: formValue.dryRun
     };
     this.syncing = true;
