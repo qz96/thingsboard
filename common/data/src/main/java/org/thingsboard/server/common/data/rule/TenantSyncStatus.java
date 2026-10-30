@@ -29,6 +29,12 @@ public enum TenantSyncStatus {
     /** 目标租户无同名链，按 SKIP 策略跳过。 */
     SKIPPED,
 
+    /** 目标租户已是当前模板版本（checksum 一致），无需重复导入。 */
+    UNCHANGED,
+
+    /** 目标租户的规则链已被本地修改，按 OVERWRITE_UNCHANGED 策略跳过，需人工确认或强制覆盖。 */
+    DRIFTED,
+
     /** 同步失败（异常）。 */
     FAILED,
 

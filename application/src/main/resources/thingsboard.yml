@@ -2085,3 +2085,15 @@ mqtt:
       # The actual delay is randomized within a range defined by multiplying the base delay by a factor between (1 - jitter_factor) and (1 + jitter_factor).
       # For example, a jitter_factor of 0.15 means the actual delay may vary by up to ±15% of the base delay.
       jitter_factor: "${TB_MQTT_CLIENT_RETRANSMISSION_JITTER_FACTOR:0.15}"
+
+# 平台默认模板（跨租户规则链下发）
+platform:
+  rulechain-template:
+    # 总开关：开启后可在管理接口使用异步模板下发，并在新租户创建时自动应用
+    enabled: "${PLATFORM_TEMPLATE_ENABLED:false}"
+    # 基准规则链所在租户 ID（平台管理员维护，SYS_ADMIN 不属于任何租户，必须显式指定）
+    source-tenant-id: "${PLATFORM_TEMPLATE_SOURCE_TENANT_ID:}"
+    # 基准规则链名称（配合 source-tenant-id 定位，须为自包含规则链）
+    source-rule-chain-name: "${PLATFORM_TEMPLATE_RULE_CHAIN_NAME:}"
+    # 新租户创建后是否自动应用模板（仅在 enabled=true 且上面两项已配置时生效）
+    auto-apply-on-tenant-create: "${PLATFORM_TEMPLATE_AUTO_APPLY:true}"

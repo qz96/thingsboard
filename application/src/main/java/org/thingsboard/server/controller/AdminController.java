@@ -85,6 +85,7 @@ import org.thingsboard.server.common.data.page.PageData;
 import org.thingsboard.server.common.data.page.PageLink;
 import org.thingsboard.server.common.data.rule.RuleChain;
 import org.thingsboard.server.common.data.rule.RuleChainType;
+import org.thingsboard.server.common.data.rule.RuleChainSyncTask;
 import org.thingsboard.server.common.data.rule.SyncRuleChainRequest;
 import org.thingsboard.server.common.data.rule.SyncRuleChainResult;
 import org.thingsboard.server.service.rule.TbRuleChainSyncService;
@@ -531,6 +532,29 @@ public class AdminController extends BaseController {
     @PostMapping(value = "/ruleChain/sync")
     public SyncRuleChainResult syncRuleChain(@RequestBody SyncRuleChainRequest request) throws ThingsboardException {
         return ruleChainSyncService.syncRuleChain(request, getCurrentUser());
+    }
+
+    /**
+     * 异步批量同步（几十个租户平台模板下发）：立即返回任务对象，后台按租户串行执行。
+     * 返回体中的 id 用于轮询 {@code /ruleChain/sync/task/{taskId}}。
+     */
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
+    @PostMapping(value = "/ruleChain/sync/async")
+    public RuleChainSyncTask syncRuleChainAsync(@RequestBody SyncRuleChainRequest request) throws ThingsboardException {
+        return ruleChainSyncService.startAsync(request, getCurrentUser());
+    }
+
+    /**
+     * 查询异步同步任务进度。
+     */
+    @PreAuthorize("hasAuthority('SYS_ADMIN')")
+    @GetMapping(value = "/ruleChain/sync/task/{taskId}")
+    public RuleChainSyncTask getRuleChainSyncTask(@PathVariable("taskId") String taskId) throws ThingsboardException {
+        RuleChainSyncTask task = ruleChainSyncService.getTask(taskId);
+        if (task == null) {
+            throw new ThingsboardException("任务不存在或已过期: " + taskId, ThingsboardErrorCode.ITEM_NOT_FOUND);
+        }
+        return task;
     }
 
 }

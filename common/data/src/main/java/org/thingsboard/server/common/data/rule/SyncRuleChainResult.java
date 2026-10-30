@@ -50,6 +50,18 @@ public class SyncRuleChainResult implements Serializable {
     /** 整体备注（如源链非自包含时的违规说明）。 */
     private String message;
 
+    /** 源链内容 checksum（本次同步的模板版本标识）。 */
+    private String sourceChecksum;
+
+    /** 本次采用的目标已存在策略。 */
+    private ExistingTargetStrategy strategy;
+
+    /** 目标已是当前模板版本、无需导入的租户数。 */
+    private int unchanged;
+
+    /** 目标被本地修改、按 OVERWRITE_UNCHANGED 跳过的租户数（需人工确认或强推）。 */
+    private int drifted;
+
     /** 每租户明细。 */
     private List<TenantSyncDetail> tenants = new ArrayList<>();
 }

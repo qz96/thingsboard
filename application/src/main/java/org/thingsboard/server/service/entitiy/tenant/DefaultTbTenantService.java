@@ -27,6 +27,7 @@ import org.thingsboard.server.queue.util.TbCoreComponent;
 import org.thingsboard.server.service.entitiy.AbstractTbEntityService;
 import org.thingsboard.server.service.entitiy.queue.TbQueueService;
 import org.thingsboard.server.service.install.InstallScripts;
+import org.thingsboard.server.service.rule.TbRuleChainSyncService;
 import org.thingsboard.server.service.sync.vc.EntitiesVersionControlService;
 
 import java.util.Collections;
@@ -43,6 +44,7 @@ public class DefaultTbTenantService extends AbstractTbEntityService implements T
     private final TbQueueService tbQueueService;
     private final TenantProfileService tenantProfileService;
     private final EntitiesVersionControlService versionControlService;
+    private final TbRuleChainSyncService ruleChainSyncService;
 
     @Override
     public Tenant save(Tenant tenant) throws Exception {
@@ -57,6 +59,12 @@ public class DefaultTbTenantService extends AbstractTbEntityService implements T
             }
         });
         tenantProfileCache.evict(savedTenant.getId());
+
+        if (created) {
+            // 新租户默认实体（root 规则链等）已由上面回调创建完毕，这里异步应用平台模板规则链。
+            // 内部已做开关/配置判空与异常兜底，失败不影响租户创建。
+            ruleChainSyncService.applyTemplateToNewTenant(savedTenant.getId());
+        }
 
         TenantProfile oldTenantProfile = oldTenant != null ? tenantProfileService.findTenantProfileById(TenantId.SYS_TENANT_ID, oldTenant.getTenantProfileId()) : null;
         TenantProfile newTenantProfile = tenantProfileService.findTenantProfileById(TenantId.SYS_TENANT_ID, savedTenant.getTenantProfileId());

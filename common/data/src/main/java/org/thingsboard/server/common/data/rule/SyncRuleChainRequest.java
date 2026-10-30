@@ -46,4 +46,10 @@ public class SyncRuleChainRequest implements Serializable {
 
     /** 仅预览将要影响的租户，不实际写入。默认 false。 */
     private boolean dryRun = false;
+
+    /** 指定目标租户 ID 列表；为空表示全部租户（几十个租户时建议显式传入）。 */
+    private java.util.List<String> tenantIds;
+
+    /** 目标已存在同名链时的策略，默认 OVERWRITE_UNCHANGED（只覆盖未被本地修改的）。 */
+    private ExistingTargetStrategy existingTargetStrategy = ExistingTargetStrategy.OVERWRITE_UNCHANGED;
 }
