@@ -81,7 +81,7 @@ public class PlatformRegionStatsServiceImpl implements PlatformRegionStatsServic
                    OR (:status = 'ACTIVE' AND COALESCE(act.bool_v, false) = true)
                    OR (:status = 'OFFLINE' AND COALESCE(act.bool_v, false) = false)
                    OR (:status = 'ALARM' AND COALESCE(al.cnt, 0) > 0))
-            ORDER BY %s %s, d.name ASC
+            ORDER BY __SORT__
             LIMIT :limit OFFSET :offset
             """;
 
@@ -168,7 +168,10 @@ public class PlatformRegionStatsServiceImpl implements PlatformRegionStatsServic
     private List<Object[]> findRegionDeviceRows(UUID tenantId, String search, String status,
                                                 String sortColumn, String sortDirection,
                                                 int limit, int offset) {
-        String sql = String.format(REGION_DEVICES_SQL_TEMPLATE, sortColumn, sortDirection);
+        // 模板中含有 ILIKE 的字面量 '%'，不能用 String.format（会把 %' 当格式符抛 UnknownFormatConversionException），
+        // 这里用占位符替换：主排序字段 + d.name 兜底，语义与原先 ORDER BY xxx dir, d.name ASC 一致。
+        String sql = REGION_DEVICES_SQL_TEMPLATE
+                .replace("__SORT__", sortColumn + " " + sortDirection + ", d.name ASC");
         return entityManager.createNativeQuery(sql)
                 .setParameter("tenantId", tenantId)
                 .setParameter("search", search)
