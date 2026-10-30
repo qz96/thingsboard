@@ -1084,6 +1084,12 @@ transport:
     mapping:
       # 要素映射（sl_element_mapping 表）缓存 TTL（秒），到期惰性刷新；表缺失自动降级为原始标识符键
       cache_ttl_seconds: "${SL651_MAPPING_CACHE_TTL:60}"
+    keys:
+      # 遥测键模式：
+      #   dual   = 原始标识符键(FF08) + 表映射业务键(w21003)，默认（业务即插即用且可回溯）
+      #   mapped = 仅业务键（规则链无需翻译节点）
+      #   raw    = 仅原始键（最贴近 TB 原生，业务词汇由规则链按租户/目标自由翻译）
+      mode: "${SL651_KEYS_MODE:dual}"
   mqtt:
     # Enable/disable mqtt transport protocol.
     enabled: "${MQTT_ENABLED:true}"

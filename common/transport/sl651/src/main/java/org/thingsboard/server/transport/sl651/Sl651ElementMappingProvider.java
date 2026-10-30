@@ -3,7 +3,7 @@ package org.thingsboard.server.transport.sl651;
 /**
  * SL651 要素 → HJ212 污染因子编码 的映射提供者。
  *
- * 背景：传输层默认把遥测键落成「完整 2 字节数据标识符」的十六进制形式（如 FF97），
+ * 背景：传输层默认把遥测键落成「完整 2 字节数据标识符」的十六进制形式（如 FF08），
  * 语义对业务侧不友好。网关侧的实践是用数据库表
  * {@code sl_element_mapping(guide_byte, pollutant_code, enabled, ...)}
  * 做表驱动翻译（guide_byte → 如 w21003/e01203）。

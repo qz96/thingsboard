@@ -41,12 +41,23 @@ public class Sl651TransportContext extends TransportContext {
     @Autowired(required = false)
     private Sl651ElementMappingProvider elementMappingProvider;
 
+    /**
+     * 遥测键模式：dual（默认，原始标识符键 + 表映射业务键）/ mapped（仅业务键）/ raw（仅原始键）。
+     * 见 {@link Sl651KvBuilder.KeyMode}——同一份代码可切换三种架构取舍，切换零成本。
+     */
+    @Value("${transport.sl651.keys.mode:dual}")
+    private String keysMode;
+
     public String getTokenPrefix() {
         return tokenPrefix;
     }
 
     public Sl651ElementMappingProvider getElementMappingProvider() {
         return elementMappingProvider;
+    }
+
+    public Sl651KvBuilder.KeyMode getKeysMode() {
+        return Sl651KvBuilder.KeyMode.fromConfig(keysMode);
     }
 
     /**

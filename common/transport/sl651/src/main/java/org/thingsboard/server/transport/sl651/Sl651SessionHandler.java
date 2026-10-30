@@ -240,41 +240,24 @@ public class Sl651SessionHandler extends SimpleChannelInboundHandler<SL651Frame>
         transportService.process(sessionInfo, rawAttr, TransportServiceCallback.EMPTY);
     }
 
+    /**
+     * 构建遥测键值对（纯逻辑见 {@link Sl651KvBuilder}）。
+     *
+     * 键模式由 transport.sl651.keys.mode 决定：
+     *  - dual（默认）：同时下发原始标识符键（FF97）与表映射业务键（w21003）；
+     *  - mapped：仅业务键（规则链可不做翻译）；
+     *  - raw：仅原始键（最贴近 TB 原生，业务词汇交给规则链按租户自由翻译）。
+     */
     private java.util.List<TransportProtos.KeyValueProto> buildKvList(SL651Frame frame) {
-        java.util.List<TransportProtos.KeyValueProto> kvList = new java.util.ArrayList<>();
-        Sl651ElementMappingProvider mapping = context.getElementMappingProvider();
-        for (DataElement element : frame.getDataElements()) {
-            double value = element.getValue();
-            if (Double.isNaN(value)) {
-                continue; // 非法 BCD 数据，跳过
-            }
-            // 键解析优先级：
-            //  1) 表驱动映射（sl_element_mapping，引导符 → HJ212 污染因子编码，如 w21003）——与网关同表；
-            //  2) 未映射 → 回退为完整 2 字节数据标识符（如 FF97），便于事后在映射页补定义。
-            // 由此规则链不再需要硬编码的翻译脚本。
-            String mapped = mapping != null ? mapping.getPollutantCode(element.getGuideByte()) : null;
-            String key = applyKeyPrefix(mapped != null && !mapped.isBlank()
-                    ? mapped
-                    : String.format("%04X", element.getFullIdentifier()));
-            if (log.isDebugEnabled()) {
-                log.debug("[{}] 要素键: 引导符=0x{} → 键={} 值={}", address,
-                        String.format("%02X", element.getGuideByte()), key, value);
-            }
-            kvList.add(TransportProtos.KeyValueProto.newBuilder()
-                    .setKey(key)
-                    .setType(TransportProtos.KeyValueType.DOUBLE_V)
-                    .setDoubleV(value)
-                    .build());
+        java.util.List<TransportProtos.KeyValueProto> kvList = Sl651KvBuilder.build(
+                frame,
+                context.getElementMappingProvider(),
+                profileConfig.getTelemetryKeyPrefix(),
+                context.getKeysMode());
+        if (log.isDebugEnabled()) {
+            log.debug("[{}] 遥测键({} 组): {}", address, kvList.size(), kvList);
         }
         return kvList;
-    }
-
-    private String applyKeyPrefix(String key) {
-        String prefix = profileConfig.getTelemetryKeyPrefix();
-        if (prefix != null && !prefix.isBlank() && !"sl651".equals(prefix)) {
-            return prefix + "_" + key;
-        }
-        return key;
     }
 
     private boolean isStatusReport(SL651Frame frame) {
