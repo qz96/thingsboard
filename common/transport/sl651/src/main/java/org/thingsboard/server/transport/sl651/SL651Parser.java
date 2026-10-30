@@ -423,6 +423,14 @@ public class SL651Parser {
 
             return frame;
 
+        } catch (IndexOutOfBoundsException e) {
+            // 越界=片段被截断：解码器按结束符扫描时，数据字节恰为 0x03/0x17 会切出半帧，
+            // 属探测候选的正常情形而非故障。按 debug 记录，避免每帧刷 ERROR 堆栈。
+            log.debug("候选片段长度不足，跳过: {}", e.getMessage());
+            frame.setValid(false);
+            frame.setMsg("报文长度不足(截断)");
+            rawData.readerIndex(originalReaderIndex);
+            return frame;
         } catch (Exception e) {
             log.error("ByteBuf解析异常", e);
             frame.setValid(false);

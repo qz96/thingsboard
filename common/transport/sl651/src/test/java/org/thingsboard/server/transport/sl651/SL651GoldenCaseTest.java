@@ -96,6 +96,15 @@ class SL651GoldenCaseTest {
     }
 
     @Test
+    void truncatedCandidate_returnsInvalidWithoutThrowing() {
+        // 解码器按结束符扫描时，发报时间的秒字节 0x03 会被误当结束符，切出 23 字节半帧。
+        // 解析器必须返回 invalid 而不是抛异常（否则解码线程会刷 ERROR 堆栈）。
+        byte[] full = hexToBytes(REAL_FRAME_HEX);
+        SL651Frame frame = parser.parse(Arrays.copyOf(full, 23));
+        assertFalse(frame.isValid(), "截断候选必须判为无效且不抛异常");
+    }
+
+    @Test
     void decoder_stickyPackets_emitsTwoFrames() {
         EmbeddedChannel channel = new EmbeddedChannel(
                 new Sl651FrameDecoder(parser, 2048));

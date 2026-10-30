@@ -18,6 +18,7 @@ package org.thingsboard.server.transport.sl651;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ import java.util.List;
  *  2. 依据长度字段待齐整帧后交给 {@link SL651Parser} 解析；
  *  3. 解析结果为有效帧则向后传递 {@link SL651Frame}，否则丢弃以便重新同步。
  */
+@Slf4j
 public class Sl651FrameDecoder extends ByteToMessageDecoder {
 
     // 帧起始符
@@ -96,8 +98,16 @@ public class Sl651FrameDecoder extends ByteToMessageDecoder {
                 return; // 结束符之后的CRC字节尚未到齐，等待更多数据
             }
             ByteBuf candidate = in.retainedSlice(base, frameLength);
-            SL651Frame frame = parser.parse(candidate);
-            candidate.release();
+            SL651Frame frame;
+            try {
+                frame = parser.parse(candidate);
+            } catch (Exception e) {
+                // 防御：解析器任何异常都不应中断切帧扫描（候选可能是误判的结束符）
+                log.debug("候选片段解析异常，跳过: {}", e.getMessage());
+                frame = null;
+            } finally {
+                candidate.release();
+            }
             if (frame != null && frame.isValid()) {
                 byte[] raw = new byte[frameLength];
                 in.getBytes(base, raw);
