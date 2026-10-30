@@ -153,7 +153,7 @@ public class DeviceController extends BaseController {
                     "If the user has the authority of 'Tenant Administrator', the server checks that the device is owned by the same tenant. " +
                     "If the user has the authority of 'Customer User', the server checks that the device is assigned to the same customer. " +
                     DEVICE_INFO_DESCRIPTION + TENANT_OR_CUSTOMER_AUTHORITY_PARAGRAPH)
-    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER', 'TENANT_VIEWER')")
     @RequestMapping(value = "/device/info/{deviceId}", method = RequestMethod.GET)
     @ResponseBody
     public DeviceInfo getDeviceInfoById(@Parameter(description = DEVICE_ID_PARAM_DESCRIPTION)
@@ -330,7 +330,7 @@ public class DeviceController extends BaseController {
     @ApiOperation(value = "Get Tenant Devices (getTenantDevices)",
             notes = "Returns a page of devices owned by tenant. " +
                     PAGE_DATA_PARAMETERS + TENANT_AUTHORITY_PARAGRAPH)
-    @PreAuthorize("hasAuthority('TENANT_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'TENANT_VIEWER')")
     @RequestMapping(value = "/tenant/devices", params = {"pageSize", "page"}, method = RequestMethod.GET)
     @ResponseBody
     public PageData<Device> getTenantDevices(

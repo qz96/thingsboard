@@ -51,6 +51,7 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -234,6 +235,51 @@ public class JwtTokenFactory {
     public JwtPair createTokenPair(SecurityUser securityUser) {
         securityUser.setSessionId(UUID.randomUUID().toString());
         JwtToken accessToken = createAccessJwtToken(securityUser);
+        JwtToken refreshToken = createRefreshToken(securityUser);
+        return new JwtPair(accessToken.getToken(), refreshToken.getToken());
+    }
+
+    /**
+     * Creates an access token with additional claims (e.g. IoT bridge {@code act} / {@code sso*} audit claims).
+     * <p>
+     * Used by the IoT bridge (water platform -> IoT platform passwordless jump) to inject the real operator identity
+     * into the token payload. Does not affect the default {@link #createAccessJwtToken(SecurityUser)} behaviour.
+     */
+    public AccessJwtToken createAccessJwtToken(SecurityUser securityUser, Map<String, Object> extraClaims) {
+        if (securityUser.getAuthority() == null) {
+            throw new IllegalArgumentException("User doesn't have any privileges");
+        }
+
+        UserPrincipal principal = securityUser.getUserPrincipal();
+
+        JwtBuilder jwtBuilder = setUpToken(securityUser, securityUser.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority).collect(Collectors.toList()), jwtSettingsService.getJwtSettings().getTokenExpirationTime());
+        jwtBuilder.claim(FIRST_NAME, securityUser.getFirstName())
+                .claim(LAST_NAME, securityUser.getLastName())
+                .claim(ENABLED, securityUser.isEnabled())
+                .claim(IS_PUBLIC, principal.getType() == UserPrincipal.Type.PUBLIC_ID);
+        if (securityUser.getTenantId() != null) {
+            jwtBuilder.claim(TENANT_ID, securityUser.getTenantId().getId().toString());
+        }
+        if (securityUser.getCustomerId() != null) {
+            jwtBuilder.claim(CUSTOMER_ID, securityUser.getCustomerId().getId().toString());
+        }
+        if (extraClaims != null) {
+            extraClaims.forEach(jwtBuilder::claim);
+        }
+
+        String token = jwtBuilder.compact();
+
+        return new AccessJwtToken(token);
+    }
+
+    /**
+     * Creates a token pair where the access token carries additional claims (IoT bridge {@code act} / {@code sso*}).
+     * The refresh token does not carry the extra claims (unchanged semantics).
+     */
+    public JwtPair createTokenPair(SecurityUser securityUser, Map<String, Object> extraClaims) {
+        securityUser.setSessionId(UUID.randomUUID().toString());
+        JwtToken accessToken = createAccessJwtToken(securityUser, extraClaims);
         JwtToken refreshToken = createRefreshToken(securityUser);
         return new JwtPair(accessToken.getToken(), refreshToken.getToken());
     }

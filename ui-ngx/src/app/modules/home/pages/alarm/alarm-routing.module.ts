@@ -39,7 +39,7 @@ const routes: Routes = [
     path: 'alarms',
     component: AlarmTableComponent,
     data: {
-      auth: [Authority.TENANT_ADMIN, Authority.CUSTOMER_USER],
+      auth: [Authority.TENANT_ADMIN, Authority.CUSTOMER_USER, Authority.TENANT_VIEWER],
       title: 'alarm.alarms',
       breadcrumb: {
         menuId: MenuId.alarms

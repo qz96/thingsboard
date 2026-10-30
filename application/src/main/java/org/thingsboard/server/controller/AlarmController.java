@@ -115,7 +115,7 @@ public class AlarmController extends BaseController {
     @ApiOperation(value = "Get Alarm Info (getAlarmInfoById)",
             notes = "Fetch the Alarm Info object based on the provided Alarm Id. " +
                     ALARM_SECURITY_CHECK + ALARM_INFO_DESCRIPTION + TENANT_OR_CUSTOMER_AUTHORITY_PARAGRAPH)
-    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER', 'TENANT_VIEWER')")
     @GetMapping(value = "/alarm/info/{alarmId}")
     public AlarmInfo getAlarmInfoById(@Parameter(description = ALARM_ID_PARAM_DESCRIPTION)
                                       @PathVariable(ALARM_ID) String strAlarmId) throws ThingsboardException {
@@ -285,7 +285,7 @@ public class AlarmController extends BaseController {
                     "If the user has the authority of 'Customer User', the server returns alarms that belongs to the customer of current user. " +
                     "Specifying both parameters 'searchStatus' and 'status' at the same time will cause an error. " +
                     PAGE_DATA_PARAMETERS + TENANT_OR_CUSTOMER_AUTHORITY_PARAGRAPH)
-    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER', 'TENANT_VIEWER')")
     @GetMapping(value = "/alarms")
     public PageData<AlarmInfo> getAllAlarms(
             @Parameter(description = ALARM_QUERY_SEARCH_STATUS_DESCRIPTION, schema = @Schema(allowableValues = {"ANY", "ACTIVE", "CLEARED", "ACK", "UNACK"}))

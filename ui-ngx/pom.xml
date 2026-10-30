@@ -33,6 +33,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.dir>${basedir}/..</main.dir>
+        <skip.ui>false</skip.ui>
     </properties>
 
     <build>
@@ -43,30 +44,45 @@
         </resources>
         <plugins>
             <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <configuration>
-                    <installDirectory>target</installDirectory>
-                    <workingDirectory>${basedir}</workingDirectory>
-                </configuration>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>install node and npm</id>
+                        <id>yarn install</id>
+                        <phase>process-resources</phase>
                         <goals>
-                            <goal>install-node-and-yarn</goal>
+                            <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v22.18.0</nodeVersion>
-                            <yarnVersion>v1.22.22</yarnVersion>
+                            <skip>${skip.ui}</skip>
+                            <executable>yarn</executable>
+                            <arguments>
+                                <argument>install</argument>
+                                <argument>--non-interactive</argument>
+                                <argument>--network-concurrency</argument>
+                                <argument>4</argument>
+                                <argument>--network-timeout</argument>
+                                <argument>100000</argument>
+                                <argument>--mutex</argument>
+                                <argument>network</argument>
+                            </arguments>
+                            <workingDirectory>${basedir}</workingDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>yarn install</id>
+                        <id>yarn build</id>
+                        <phase>process-resources</phase>
                         <goals>
-                            <goal>yarn</goal>
+                            <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <arguments>install --non-interactive --network-concurrency 4 --network-timeout 100000 --mutex network</arguments>
+                            <skip>${skip.ui}</skip>
+                            <executable>yarn</executable>
+                            <arguments>
+                                <argument>run</argument>
+                                <argument>build:prod</argument>
+                            </arguments>
+                            <workingDirectory>${basedir}</workingDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -74,35 +90,6 @@
         </plugins>
     </build>
     <profiles>
-        <profile>
-            <id>yarn-build</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.github.eirslett</groupId>
-                        <artifactId>frontend-maven-plugin</artifactId>
-                        <configuration>
-                            <installDirectory>target</installDirectory>
-                            <workingDirectory>${basedir}</workingDirectory>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>yarn build</id>
-                                <goals>
-                                    <goal>yarn</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>run build:prod</arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>yarn-start</id>
             <activation>
@@ -113,20 +100,21 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.github.eirslett</groupId>
-                        <artifactId>frontend-maven-plugin</artifactId>
-                        <configuration>
-                            <installDirectory>target</installDirectory>
-                            <workingDirectory>${basedir}</workingDirectory>
-                        </configuration>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
                         <executions>
                             <execution>
                                 <id>yarn start</id>
+                                <phase>process-resources</phase>
                                 <goals>
-                                    <goal>yarn</goal>
+                                    <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>start</arguments>
+                                    <executable>yarn</executable>
+                                    <arguments>
+                                        <argument>start</argument>
+                                    </arguments>
+                                    <workingDirectory>${basedir}</workingDirectory>
                                 </configuration>
                             </execution>
                         </executions>

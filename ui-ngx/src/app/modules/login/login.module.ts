@@ -20,6 +20,7 @@ import { CommonModule } from '@angular/common';
 import { LoginRoutingModule } from './login-routing.module';
 import { LoginComponent } from './pages/login/login.component';
 import { SharedModule } from '@app/shared/shared.module';
+import { AppDownloadModule } from '@shared/components/app-download/app-download.module';
 import { ResetPasswordRequestComponent } from '@modules/login/pages/login/reset-password-request.component';
 import { ResetPasswordComponent } from '@modules/login/pages/login/reset-password.component';
 import { CreatePasswordComponent } from '@modules/login/pages/login/create-password.component';
@@ -38,6 +39,7 @@ import { LinkExpiredComponent } from '@modules/login/pages/login/link-expired.co
   imports: [
     CommonModule,
     SharedModule,
+    AppDownloadModule,
     LoginRoutingModule
   ]
 })

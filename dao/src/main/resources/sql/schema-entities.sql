@@ -21,6 +21,17 @@ CREATE TABLE IF NOT EXISTS tb_schema_settings
     CONSTRAINT tb_schema_settings_pkey PRIMARY KEY (schema_version)
 );
 
+CREATE TABLE IF NOT EXISTS tb_sso_account (
+    water_user_id varchar(64) NOT NULL,
+    project_id varchar(128) NOT NULL,
+    tb_user_id uuid NOT NULL,
+    role varchar(32) NOT NULL,
+    created_time bigint NOT NULL,
+    synced_time bigint,
+    CONSTRAINT tb_sso_account_pkey PRIMARY KEY (water_user_id, project_id),
+    CONSTRAINT tb_sso_account_user_unq UNIQUE (tb_user_id)
+);
+
 CREATE TABLE IF NOT EXISTS admin_settings (
     id uuid NOT NULL CONSTRAINT admin_settings_pkey PRIMARY KEY,
     tenant_id uuid NOT NULL,

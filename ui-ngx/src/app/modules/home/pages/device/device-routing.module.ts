@@ -39,7 +39,7 @@ export const deviceRoutes: Routes = [
         path: '',
         component: EntitiesTableComponent,
         data: {
-          auth: [Authority.TENANT_ADMIN, Authority.CUSTOMER_USER],
+          auth: [Authority.TENANT_ADMIN, Authority.CUSTOMER_USER, Authority.TENANT_VIEWER],
           title: 'device.devices',
           devicesType: 'tenant'
         },
@@ -56,7 +56,7 @@ export const deviceRoutes: Routes = [
             labelFunction: entityDetailsPageBreadcrumbLabelFunction,
             icon: 'devices_other'
           } as BreadCrumbConfig<EntityDetailsPageComponent>,
-          auth: [Authority.TENANT_ADMIN, Authority.CUSTOMER_USER],
+          auth: [Authority.TENANT_ADMIN, Authority.CUSTOMER_USER, Authority.TENANT_VIEWER],
           title: 'device.devices',
           devicesType: 'tenant'
         },

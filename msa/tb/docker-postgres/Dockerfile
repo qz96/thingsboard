@@ -14,7 +14,10 @@
 # limitations under the License.
 #
 
-FROM thingsboard/openjdk17:bookworm-slim
+# 预烘焙基础镜像（含 PostgreSQL 12，见 base-postgres/Dockerfile）。
+# 需先构建 tb-base-postgres:local（运行仓库根目录 build-base-postgres.ps1 / .sh）。
+# 回滚：改回 FROM thingsboard/openjdk17:bookworm-slim 并在下方恢复 apt 安装段。
+FROM tb-base-postgres:local
 
 ENV PG_MAJOR 12
 
@@ -34,16 +37,7 @@ ENV PGLOG=/var/log/postgres
 
 COPY logback.xml ${pkg.name}.conf start-db.sh stop-db.sh start-tb.sh upgrade-tb.sh install-tb.sh ${pkg.name}.deb /tmp/
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends wget gnupg2 \
-    && echo "deb http://apt.postgresql.org/pub/repos/apt/ $(. /etc/os-release && echo -n $VERSION_CODENAME)-pgdg main" | tee --append /etc/apt/sources.list.d/pgdg.list > /dev/null \
-    && wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O- | apt-key add - \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends postgresql-${PG_MAJOR} \
-    && rm -rf /var/lib/apt/lists/* \
-    && update-rc.d postgresql disable \
-    && apt-get purge -y --auto-remove \
-    && chmod a+x /tmp/*.sh \
+RUN chmod a+x /tmp/*.sh \
     && mv /tmp/start-tb.sh /usr/bin \
     && mv /tmp/upgrade-tb.sh /usr/bin \
     && mv /tmp/install-tb.sh /usr/bin \

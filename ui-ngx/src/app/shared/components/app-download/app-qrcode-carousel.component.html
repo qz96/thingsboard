@@ -1,0 +1,50 @@
+<!--
+
+    Copyright © 2016-2025 The Thingsboard Authors
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="tb-app-qrcode-carousel" *ngIf="cards.length">
+  <div class="tb-app-qrcode-viewport" [style.width.px]="qrSize + 12">
+    <div class="tb-app-qrcode-box" [style.width.px]="qrSize + 12" [style.height.px]="qrSize + 12">
+      <div class="tb-app-qrcode-svg" [innerHTML]="(current?.qrCodeSVG || '') | safe: 'html'"></div>
+    </div>
+    <button mat-icon-button type="button"
+            class="tb-app-qrcode-nav tb-app-qrcode-nav-prev"
+            *ngIf="cards.length > 1"
+            (click)="prev($event)">
+      <mat-icon class="material-icons">chevron_left</mat-icon>
+    </button>
+    <button mat-icon-button type="button"
+            class="tb-app-qrcode-nav tb-app-qrcode-nav-next"
+            *ngIf="cards.length > 1"
+            (click)="next($event)">
+      <mat-icon class="material-icons">chevron_right</mat-icon>
+    </button>
+  </div>
+  <div class="tb-app-qrcode-name" *ngIf="current">{{ current.display.appName }}</div>
+  <div class="tb-app-qrcode-dots" *ngIf="cards.length > 1">
+    <span class="tb-app-qrcode-dot"
+          *ngFor="let card of cards; let i = index"
+          [class.active]="i === index"
+          (click)="select(i, $event)"></span>
+  </div>
+  <a class="tb-app-qrcode-download"
+     *ngIf="showDownloadLink && current"
+     [href]="current.display.downloadUrl"
+     target="_blank"
+     rel="noopener">
+    {{ 'androidapp.download' | translate }}
+  </a>
+</div>

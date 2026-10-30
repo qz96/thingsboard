@@ -51,7 +51,7 @@
           (click)="onEntityAction($event, 'loginAsUser')"
           *ngIf="loginAsUserEnabled$ | async"
           [class.!hidden]="isEdit">
-    {{ (entity?.authority === authority.TENANT_ADMIN ? 'user.login-as-tenant-admin' : 'user.login-as-customer-user') | translate }}
+    {{ (entity?.authority === authority.CUSTOMER_USER ? 'user.login-as-customer-user' : 'user.login-as-tenant-admin') | translate }}
   </button>
   <button mat-raised-button color="primary"
           [disabled]="(isLoading$ | async)"
@@ -108,7 +108,7 @@
               class="flex-1"
               label="{{ 'user.default-dashboard' | translate }}"
               formControlName="defaultDashboardId"
-              [dashboardsScope]="entity?.authority === authority.TENANT_ADMIN ? 'tenant' : 'customer'"
+              [dashboardsScope]="entity?.authority === authority.CUSTOMER_USER ? 'customer' : 'tenant'"
               [tenantId]="entity?.tenantId?.id"
               [customerId]="entity?.customerId?.id"
               [selectFirstDashboard]="false"
@@ -122,7 +122,7 @@
               class="flex-1"
               label="{{ 'dashboard.home-dashboard' | translate }}"
               formControlName="homeDashboardId"
-              [dashboardsScope]="entity?.authority === authority.TENANT_ADMIN ? 'tenant' : 'customer'"
+              [dashboardsScope]="entity?.authority === authority.CUSTOMER_USER ? 'customer' : 'tenant'"
               [tenantId]="entity?.tenantId?.id"
               [customerId]="entity?.customerId?.id"
               [selectFirstDashboard]="false"

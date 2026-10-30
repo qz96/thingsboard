@@ -60,7 +60,7 @@ const routes: Routes = [
       breadcrumb: {
         skip: true
       },
-      auth: [Authority.TENANT_ADMIN, Authority.CUSTOMER_USER],
+      auth: [Authority.TENANT_ADMIN, Authority.CUSTOMER_USER, Authority.TENANT_VIEWER],
       title: 'dashboard.dashboard',
       widgetEditMode: false,
       singlePageMode: true

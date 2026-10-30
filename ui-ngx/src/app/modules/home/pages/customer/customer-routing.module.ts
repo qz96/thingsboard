@@ -257,7 +257,7 @@ const routes: Routes = [
                 labelFunction: dashboardBreadcumbLabelFunction,
                 icon: 'dashboard'
               } as BreadCrumbConfig<DashboardPageComponent>,
-              auth: [Authority.TENANT_ADMIN, Authority.CUSTOMER_USER],
+              auth: [Authority.TENANT_ADMIN, Authority.CUSTOMER_USER, Authority.TENANT_VIEWER],
               title: 'customer.dashboard',
               widgetEditMode: false
             },

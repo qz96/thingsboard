@@ -117,7 +117,7 @@ public class AssetController extends BaseController {
                     "If the user has the authority of 'Tenant Administrator', the server checks that the asset is owned by the same tenant. " +
                     "If the user has the authority of 'Customer User', the server checks that the asset is assigned to the same customer. "
                     + ASSET_INFO_DESCRIPTION + TENANT_OR_CUSTOMER_AUTHORITY_PARAGRAPH)
-    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER')")
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'CUSTOMER_USER', 'TENANT_VIEWER')")
     @RequestMapping(value = "/asset/info/{assetId}", method = RequestMethod.GET)
     @ResponseBody
     public AssetInfo getAssetInfoById(@Parameter(description = ASSET_ID_PARAM_DESCRIPTION)
@@ -204,7 +204,7 @@ public class AssetController extends BaseController {
     @ApiOperation(value = "Get Tenant Assets (getTenantAssets)",
             notes = "Returns a page of assets owned by tenant. " +
                     PAGE_DATA_PARAMETERS + TENANT_AUTHORITY_PARAGRAPH)
-    @PreAuthorize("hasAuthority('TENANT_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('TENANT_ADMIN', 'TENANT_VIEWER')")
     @RequestMapping(value = "/tenant/assets", params = {"pageSize", "page"}, method = RequestMethod.GET)
     @ResponseBody
     public PageData<Asset> getTenantAssets(

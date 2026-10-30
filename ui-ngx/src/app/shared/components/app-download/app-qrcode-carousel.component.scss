@@ -1,0 +1,122 @@
+/**
+ * Copyright © 2016-2025 The Thingsboard Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+:host {
+  display: block;
+  width: 100%;
+}
+
+.tb-app-qrcode-carousel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.tb-app-qrcode-viewport {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.tb-app-qrcode-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 6px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.tb-app-qrcode-svg {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.tb-app-qrcode-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px !important;
+  height: 28px !important;
+  padding: 2px !important;
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+
+  .mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+  }
+}
+
+.tb-app-qrcode-nav-prev {
+  left: -12px;
+}
+
+.tb-app-qrcode-nav-next {
+  right: -12px;
+}
+
+.tb-app-qrcode-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tb-app-qrcode-dots {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.tb-app-qrcode-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.24);
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &.active {
+    background-color: #2e7d32;
+  }
+}
+
+.tb-app-qrcode-download {
+  font-size: 13px;
+  text-decoration: none;
+}

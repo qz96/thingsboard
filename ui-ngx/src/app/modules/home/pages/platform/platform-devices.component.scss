@@ -1,0 +1,235 @@
+/**
+ * Copyright © 2016-2025 The Thingsboard Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+:host {
+  display: block;
+  height: 100%;
+}
+
+.tb-platform-devices {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 12px;
+  height: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.regions-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.regions-header {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.region-search {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.regions-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.region-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  text-align: left;
+}
+
+.region-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.region-item.selected {
+  background: rgba(48, 126, 214, 0.12);
+  font-weight: 500;
+}
+
+.region-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.region-count {
+  margin-left: 8px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.regions-empty {
+  padding: 12px 4px;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.content-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  padding: 12px 16px;
+  overflow: hidden;
+}
+
+.content-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.content-title {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.region-name {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.region-id {
+  font-size: 11px;
+  opacity: 0.55;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.metric-card {
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.metric-label {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.metric-value {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.metric-value.active {
+  color: #198038;
+}
+
+.metric-value.danger {
+  color: #d12730;
+}
+
+.filters {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.filter-search {
+  flex: 1;
+  max-width: 360px;
+}
+
+.filter-status {
+  width: 160px;
+}
+
+.table-wrapper {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.devices-table {
+  width: 100%;
+}
+
+.actions-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.status-chip {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.status-chip.online {
+  color: #198038;
+  background: rgba(25, 128, 56, 0.08);
+}
+
+.status-chip.offline {
+  color: #6b6b6b;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.alarm-count-danger {
+  color: #d12730;
+  font-weight: 500;
+}
+
+.table-empty {
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+.empty-panel {
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  opacity: 0.6;
+}

@@ -1,0 +1,167 @@
+<!--
+
+    Copyright © 2016-2025 The Thingsboard Authors
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="tb-platform-devices">
+  <aside class="regions-panel">
+    <div class="regions-header">
+      <span translate>platform.regions</span>
+    </div>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="region-search">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput [ngModel]="regionSearch" (ngModelChange)="onRegionSearch($event)"
+             placeholder="{{ 'platform.search-regions' | translate }}">
+    </mat-form-field>
+    <mat-progress-bar mode="indeterminate" *ngIf="loadingRegions"></mat-progress-bar>
+    <div class="regions-list">
+      <button type="button" class="region-item"
+              *ngFor="let region of filteredRegions; trackBy: trackByRegion"
+              [class.selected]="region.tenantId === selectedRegion?.tenantId"
+              (click)="selectRegion(region)">
+        <span class="region-title" [title]="region.title">{{ region.title || '—' }}</span>
+        <span class="region-count">{{ region.deviceCount }}</span>
+      </button>
+      <div class="regions-empty" *ngIf="!filteredRegions.length">
+        {{ 'platform.no-regions' | translate }}
+      </div>
+    </div>
+  </aside>
+
+  <section class="content-panel" *ngIf="selectedRegion; else noRegion">
+    <header class="content-header">
+      <div class="content-title">
+        <span class="region-name">{{ selectedRegion.title || '—' }}</span>
+        <span class="region-id">{{ selectedRegion.tenantId }}</span>
+      </div>
+      <span class="flex-1"></span>
+      <button mat-stroked-button color="primary" type="button"
+              [disabled]="switchingRegion" (click)="switchToRegion()">
+        <mat-icon>switch_account</mat-icon>
+        {{ 'platform.switch-to-region' | translate }}
+      </button>
+      <button mat-icon-button type="button" (click)="refresh()"
+              matTooltip="{{ 'action.refresh' | translate }}" matTooltipPosition="above">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </header>
+
+    <div class="metrics">
+      <div class="metric-card">
+        <div class="metric-label" translate>platform.device-total</div>
+        <div class="metric-value">{{ summary?.deviceCount ?? selectedRegion.deviceCount }}</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label" translate>platform.device-active</div>
+        <div class="metric-value active">{{ summary?.activeCount ?? selectedRegion.activeCount }}</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label" translate>platform.device-offline</div>
+        <div class="metric-value">{{ summary?.offlineCount ?? selectedRegion.offlineCount }}</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label" translate>platform.device-alarms</div>
+        <div class="metric-value" [class.danger]="(summary?.alarmCount ?? selectedRegion.alarmCount) > 0">
+          {{ summary?.alarmCount ?? selectedRegion.alarmCount }}
+        </div>
+      </div>
+    </div>
+
+    <div class="filters">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filter-search">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput [ngModel]="textSearch" (ngModelChange)="onSearch($event)"
+               placeholder="{{ 'platform.search-devices' | translate }}">
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filter-status">
+        <mat-label translate>platform.device-status</mat-label>
+        <mat-select [(ngModel)]="status" (ngModelChange)="onStatusChange()">
+          <mat-option *ngFor="let item of statuses" [value]="item">
+            {{ ('platform.status-' + item.toLowerCase()) | translate }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="table-wrapper">
+      <mat-progress-bar mode="indeterminate" *ngIf="loadingDevices"></mat-progress-bar>
+      <table mat-table [dataSource]="devices" matSort (matSortChange)="onSortChange($event)" class="devices-table">
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="name">{{ 'platform.device-name' | translate }}</th>
+          <td mat-cell *matCellDef="let device">{{ device.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="type">{{ 'platform.device-type' | translate }}</th>
+          <td mat-cell *matCellDef="let device">{{ device.type || '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="label">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="label">{{ 'platform.device-label' | translate }}</th>
+          <td mat-cell *matCellDef="let device">{{ device.label || '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="active">{{ 'platform.device-status' | translate }}</th>
+          <td mat-cell *matCellDef="let device">
+            <span class="status-chip" [class.online]="device.active" [class.offline]="!device.active">
+              {{ (device.active ? 'platform.status-active' : 'platform.status-offline') | translate }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="alarmCount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="alarmCount">{{ 'platform.device-alarms' | translate }}</th>
+          <td mat-cell *matCellDef="let device">
+            <span [class.alarm-count-danger]="device.alarmCount > 0">{{ device.alarmCount }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let device" class="actions-cell">
+            <button mat-icon-button type="button" (click)="editDevice(device)"
+                    matTooltip="{{ 'action.edit' | translate }}" matTooltipPosition="above">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button type="button" (click)="deleteDevice(device)"
+                    matTooltip="{{ 'action.delete' | translate }}" matTooltipPosition="above">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns; trackBy: trackByDevice"></tr>
+      </table>
+      <div class="table-empty" *ngIf="!devices.length && !loadingDevices">
+        {{ 'platform.no-devices' | translate }}
+      </div>
+      <mat-paginator [length]="totalElements"
+                     [pageSize]="pageSize"
+                     [pageIndex]="pageIndex"
+                     [pageSizeOptions]="[10, 20, 50]"
+                     (page)="onPageChange($event)">
+      </mat-paginator>
+    </div>
+  </section>
+
+  <ng-template #noRegion>
+    <section class="content-panel empty-panel">
+      <div>{{ 'platform.select-region' | translate }}</div>
+    </section>
+  </ng-template>
+</div>

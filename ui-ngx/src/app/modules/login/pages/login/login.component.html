@@ -21,8 +21,11 @@
     <div class="tb-login-logo">LIHERO物联网平台</div>
     <div class="tb-login-card">
       <div class="tb-login-card-left">
-        <div class="tb-login-icon-wrapper">
+        <div class="tb-login-icon-wrapper" *ngIf="!appDisplays.length">
           <mat-icon class="tb-login-icon">lock</mat-icon>
+        </div>
+        <div class="tb-login-qrcode-wrapper" *ngIf="appDisplays.length">
+          <tb-app-qrcode-carousel [displays]="appDisplays" [qrSize]="128"></tb-app-qrcode-carousel>
         </div>
         <div class="tb-login-language-wrapper">
           <span class="tb-login-language-label">系统语言</span>

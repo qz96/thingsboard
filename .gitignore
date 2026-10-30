@@ -37,3 +37,14 @@ rebuild-docker.sh
 */.run/**
 .run/**
 .run
+
+# runtime / local only (root level only - do not shadow modules like common/data)
+/.rocksdb/
+/data/
+/.workbuddy/
+
+# locally vendored frontend libs
+ui-ngx/vendor/
+
+# local documentation (design docs, integration docs, verification material) - kept locally only
+docs/
