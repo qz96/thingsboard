@@ -154,7 +154,8 @@ security:
   iot-bridge:
     enabled: "true"
     # PEM public key (RSA, >= 2048 bits) of the assertion signer (water platform). Base64 X.509 SubjectPublicKeyInfo, without PEM headers.
-    rsaPublicKey: "MIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEA1HjPXcfYnDoWNfP9gvO0NhPXVuzonNZJYAulki8/Zbty0QR4C0tv/pOYRSWuZBziA/JsAAc1Sx4yEtO5khVwEA+32urjV1yBbX/iNSVsrF5n9T/a+RBZkDuPFnJxpmjGPakqUjRGZUpno7ef1CtHeklVi9ZdHNGcChhvi+NuZVW+RW9X/VU2l6fahAan5bkX1yWa3+KH5bbG8bpzCC3cy1VCJB9Fy0SYbcSq96yNPvNhiBuZXZsZKx2/X2QL5puwArmf+tcPFXl00lVIZMu+zxEURLPh9fS7SEmeTVs33M6ocXskD9AbrwB8NV4g9A7sukQjQhy8YRWUYWbu6s5u5iFmiNig/qburvCnRlKMgCFsCh/9kQe3EuAw7A2GJ8Dmh/sAfPxYjwU3QX7fdYZCQaNY/RwVeWx3F/J+2rgOiFs4kiJMh6Gwu7M2dMG3zpIISY/K2JgOHEOKF/dXZh+BmwlZBoqasa5/miDv4TQsGxS/k1X8ty9jjW02TcKSYsFHAgMBAAE="
+    # 2026-11-02 轮换：默认值已换新密钥（RSA-2048），可用 SECURITY_IOT_BRIDGE_RSA_PUBLIC_KEY 覆盖，无需重新打包
+    rsaPublicKey: "${SECURITY_IOT_BRIDGE_RSA_PUBLIC_KEY:MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8VhV+fIaPKdCY5ZCeBZwyNhHFCNRBFErbPlXID3IrA+AVy+70DN4yc30vIRHTY9KQbfx38px0j4q3Wg4/sANfHVhb+CEC034+cQGKVjmb3CkyGYjEMyMCmIZcUhc+TdEeayXGQyuy3NFoEgmVW1DmYJYEVtHf0BEAuLp/k7YBCxYNQZNWSdI/uxK4mYQ6pio50mEWHN/0iWtg6a901gnuf/Xd88NWHd7hwOGGMsFaeNbxwI0NwuNo5NbyVtmLLummpfK0UqZIZ8pAqIvW323yg6NZ6bRivqeOHrIEfm4tgHQjf0Gsyr/0XqEFhLTU7xBh4kxjZ+Bv5o1s+HBPwl9UQIDAQAB}"
     # Expected issuer of the assertion
     issuer: "${SECURITY_IOT_BRIDGE_ISSUER:water-platform}"
     # Expected audience of the assertion
