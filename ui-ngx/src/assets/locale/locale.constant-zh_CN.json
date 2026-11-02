@@ -15,6 +15,7 @@
         "notification-settings": "通知设置"
     },
     "action": {
+        "test": "测试",
         "activate": "激活",
         "suspend": "暂停",
         "save": "保存",
@@ -96,6 +97,12 @@
         "none": "无"
     },
     "admin": {
+        "trendz": "Trendz",
+        "trendz-settings": "Trendz 设置",
+        "trendz-url": "Trendz 地址",
+        "trendz-url-required": "Trendz 地址不能为空",
+        "trendz-api-key": "Trendz API 密钥",
+        "trendz-enable": "启用 Trendz",
         "settings": "设置",
         "general": "基本设置",
         "general-settings": "基本设置",
@@ -680,6 +687,7 @@
         "system": "系统"
     },
     "alias": {
+        "query-options": "查询选项",
         "add": "添加别名",
         "edit": "编辑别名",
         "name": "别名",
@@ -938,6 +946,12 @@
         "view-statistics": "查看统计信息"
     },
     "api-limit": {
+        "cassandra-write-queries-core": "Rest API Cassandra 写查询",
+        "cassandra-read-queries-core": "Rest API 与 WS 遥测 Cassandra 读查询",
+        "cassandra-write-queries-rule-engine": "规则引擎遥测 Cassandra 写查询",
+        "cassandra-read-queries-rule-engine": "规则引擎遥测 Cassandra 读查询",
+        "cassandra-write-queries-monolith": "单体遥测 Cassandra 写查询",
+        "cassandra-read-queries-monolith": "单体遥测 Cassandra 读查询",
         "cassandra-queries": "Cassandra查询",
         "entity-version-creation": "实体版本创建",
         "entity-version-load": "实体版本加载",
@@ -1047,7 +1061,106 @@
         "phone-max-length": "手机号码长度应该小于256个字符",
         "city-max-length": "城市应该小于256个字符"
     },
+    "calculated-fields": {
+        "expression": "表达式",
+        "no-found": "暂无计算字段",
+        "list": "{ count, plural, =1 {一个计算字段} other {# 个计算字段列表} }",
+        "selected-fields": "已选择 { count, plural, =1 {1 个计算字段} other {# 个计算字段} }",
+        "type": {
+            "simple": "简单",
+            "script": "脚本"
+        },
+        "arguments": "参数",
+        "decimals-by-default": "默认小数位",
+        "debugging": "计算字段调试",
+        "argument-name": "参数名称",
+        "datasource": "数据源",
+        "add-argument": "添加参数",
+        "test-script-function": "测试脚本函数",
+        "no-arguments": "未配置参数",
+        "argument-settings": "参数设置",
+        "argument-current": "当前实体",
+        "argument-current-tenant": "当前区域",
+        "argument-device": "设备",
+        "argument-asset": "资产",
+        "argument-customer": "客户",
+        "argument-tenant": "当前区域",
+        "argument-type": "参数类型",
+        "see-debug-events": "查看调试事件",
+        "attribute": "属性",
+        "copy-argument-name": "复制参数名",
+        "timeseries-key": "时序键",
+        "device-name": "设备名称",
+        "latest-telemetry": "最新遥测",
+        "rolling": "时序滚动",
+        "attribute-scope": "属性范围",
+        "server-attributes": "服务端属性",
+        "client-attributes": "客户端属性",
+        "shared-attributes": "共享属性",
+        "attribute-key": "属性键",
+        "default-value": "默认值",
+        "limit": "最大数量",
+        "time-window": "时间窗口",
+        "customer-name": "客户名称",
+        "asset-name": "资产名称",
+        "timeseries": "时序",
+        "output": "输出",
+        "create": "新建计算字段",
+        "file": "计算字段文件",
+        "invalid-file-error": "文件格式无效，请确认上传的是合法的 JSON 文件。",
+        "import": "导入计算字段",
+        "export": "导出计算字段",
+        "export-failed-error": "导出计算字段失败：{{error}}",
+        "output-type": "输出类型",
+        "delete-title": "确定要删除计算字段「{{title}}」吗？",
+        "delete-text": "请注意，确认后该计算字段及其关联数据将无法恢复。",
+        "delete-multiple-title": "确定要删除{ count, plural, =1 {1 个计算字段} other {# 个计算字段} }吗？",
+        "delete-multiple-text": "请注意，确认后所有选中的计算字段及其关联数据都将被删除且无法恢复。",
+        "test-with-this-message": "使用该消息测试",
+        "use-latest-timestamp": "使用最新时间戳",
+        "hint": {
+            "arguments-simple-with-rolling": "简单类型的计算字段不应包含「时序滚动」类型的键。",
+            "arguments-empty": "参数不能为空。",
+            "expression-required": "表达式不能为空。",
+            "expression-invalid": "表达式无效",
+            "expression-max-length": "表达式长度应小于 255 个字符。",
+            "argument-name-required": "参数名称不能为空。",
+            "argument-name-pattern": "参数名称格式无效。",
+            "argument-name-duplicate": "同名参数已存在。",
+            "argument-name-max-length": "参数名称长度应小于 256 个字符。",
+            "argument-name-forbidden": "该参数名为保留名称，不可使用。",
+            "argument-type-required": "参数类型不能为空。",
+            "max-args": "参数数量已达上限。",
+            "decimals-range": "默认小数位应为 0 到 15 之间的数字。",
+            "expression": "默认表达式演示如何将华氏温度转换为摄氏温度。",
+            "arguments-entity-not-found": "未找到参数目标实体。",
+            "use-latest-timestamp": "开启后，计算结果将使用参数遥测中的最新时间戳落库，而不是服务器时间。"
+        }
+    },
     "common": {
+        "name": "名称",
+        "type": "类型",
+        "general": "常规",
+        "data": "数据",
+        "timestamp": "时间戳",
+        "value": "值",
+        "output": "输出",
+        "suffix": {
+            "s": "秒",
+            "ms": "毫秒"
+        },
+        "hint": {
+            "name-required": "名称不能为空。",
+            "name-pattern": "名称格式无效。",
+            "name-max-length": "名称长度应小于 256 个字符。",
+            "title-required": "标题不能为空。",
+            "title-pattern": "标题格式无效。",
+            "title-max-length": "标题长度应小于 256 个字符。",
+            "key-required": "键不能为空。",
+            "key-pattern": "键格式无效。",
+            "key-max-length": "键长度应小于 256 个字符。"
+        },
+        "required-fields": "缺少必填字段",
         "username": "用户名",
         "password": "密码",
         "enter-username": "输入用户名",
@@ -1366,6 +1479,7 @@
         "view-format": "类型"
     },
     "datakey": {
+        "keys": "键",
         "settings": "设置",
         "general": "常规",
         "advanced": "高级",
@@ -1640,6 +1754,12 @@
     },
     "dynamic-form": {
         "property": {
+            "disable-on-property-none": "无（字段始终启用）",
+            "support-unit-conversion": "支持单位换算"
+        },
+        "property": {
+            "support-unit-conversion": "支持单位换算",
+            "disable-on-property-none": "无（字段始终启用）",
             "properties": "属性",
             "property": "属性",
             "id": "ID",
@@ -1770,6 +1890,24 @@
         "invalid-asset-profile-file-error": "无法导入资产配置：无效的资产配置数据结构。"
     },
     "device-profile": {
+        "mqtt-protocol-version": "协议版本",
+        "lwm2m": {
+            "ota-update": "OTA 升级",
+            "use-object-19-for-ota-update": "使用 Object 19 传递 OTA 文件元数据（校验和、大小、版本、名称）",
+            "use-object-19-for-ota-update-hint": "使用 Resource ObjectId = 19 进行 OTA 升级：固件 → InstanceId = 65534，软件 → InstanceId = 65535。数据格式为 Base64 包装的 JSON，包含 OTA 文件元数据：Checksum（SHA256），以及 Title（OTA 名称）、Version（OTA 版本）、File Name（客户端保存 OTA 的文件名）、File Size（OTA 字节数）。",
+            "default-object-id-ver": {
+                "v1-2": "1.2"
+            },
+            "observe-strategy": {
+                "observe-strategy": "观察策略",
+                "single": "单独观察",
+                "single-description": "每个资源单独发送一次 Observe 请求（精度更高，网络流量更大）",
+                "composite-all": "全部复合",
+                "composite-all-description": "所有资源通过一次复合 Observe 请求观察（更高效，灵活性较低）",
+                "composite-by-object": "按对象复合",
+                "composite-by-object-description": "资源按对象类型分组，分别使用复合 Observe 请求（折中方案）"
+            }
+        },
         "device-profile": "设备配置",
         "device-profiles": "设备配置",
         "all-device-profiles": "全部",
@@ -2004,6 +2142,18 @@
         "psm-activity-timer-pattern": "PSM活动计时器必须是正整数",
         "psm-activity-timer-min": "PSM活动计时器的最小数量为{{ min }}秒。",
         "lwm2m": {
+            "observe-strategy": {
+                "observe-strategy": "观察策略",
+                "single": "单独观察",
+                "single-description": "每个资源单独发送一次 Observe 请求（精度更高，网络流量更大）",
+                "composite-all": "全部复合",
+                "composite-all-description": "所有资源通过一次复合 Observe 请求观察（更高效，灵活性较低）",
+                "composite-by-object": "按对象复合",
+                "composite-by-object-description": "资源按对象类型分组，分别使用复合 Observe 请求（折中方案）"
+            },
+            "use-object-19-for-ota-update-hint": "使用 Resource ObjectId = 19 进行 OTA 升级：固件 → InstanceId = 65534，软件 → InstanceId = 65535。数据格式为 Base64 包装的 JSON，包含 OTA 文件元数据：Checksum（SHA256），以及 Title（OTA 名称）、Version（OTA 版本）、File Name（客户端保存 OTA 的文件名）、File Size（OTA 字节数）。",
+            "use-object-19-for-ota-update": "使用 Object 19 传递 OTA 文件元数据（校验和、大小、版本、名称）",
+            "ota-update": "OTA 升级",
             "object-list": "Object列表",
             "object-list-empty": "没有选择边object。",
             "no-objects-found": "没有选择边object。",
@@ -2127,6 +2277,7 @@
             },
             "default-object-id": "默认对象版本(属性)",
             "default-object-id-ver": {
+                "v1-2": "1.2",
                 "v1-0": "1.0",
                 "v1-1": "1.1"
             }
@@ -2337,6 +2488,13 @@
         "unknown-error": "未知错误"
     },
     "entity": {
+        "edit-alias": "编辑实体别名",
+        "type-calculated-field": "计算字段",
+        "type-calculated-fields": "计算字段",
+        "type-ai-model": "AI 模型",
+        "type-ai-models": "AI 模型",
+        "type-ota-packages": "OTA 包",
+        "list-of-ota-packages": "{ count, plural, =1 {一个 OTA 包} other {# 个 OTA 包列表} }",
         "entity": "实体",
         "entities": "实体",
         "entities-count": "实体数量",
@@ -2649,6 +2807,9 @@
         "unassign-entity-views-from-edge-text": "确认后，所有选定的实体视图将被分配，边缘无法访问。"
     },
     "event": {
+        "type-debug-calculated-field": "调试",
+        "arguments": "参数",
+        "result": "结果",
         "event-type": "事件类型",
         "events-filter": "事件筛选器",
         "clean-events": "清除事件",
@@ -2857,6 +3018,10 @@
         "advanced-features": "高级功能"
     },
     "filter": {
+        "editable-hint": "允许用户在仪表板中修改筛选值。",
+        "custom-label": "自定义标签",
+        "custom-label-hint": "开启后可为筛选器设置自定义标签；关闭时自动生成。",
+        "unit": "单位",
         "add": "添加筛选器",
         "edit": "编辑筛选器",
         "name": "筛选器名称",
@@ -3397,6 +3562,7 @@
         "selected": "选择"
     },
     "js-func": {
+        "invalid-module-alias-name": "别名无效",
         "no-return-error": "函数必须返回值！",
         "return-type-mismatch": "函数必须返回'{{type}}'类型的值！",
         "tidy": "整理",
@@ -3679,6 +3845,16 @@
       "no-devices": "该区域暂无设备"
     },
     "mobile": {
+        "mobile-package-title": "应用标题",
+        "mobile-package-title-max-length": "应用标题长度应小于 256",
+        "title-cannot-contain-only-spaces": "标题不能只包含空格",
+        "title-max-length": "标题长度应小于 256",
+        "page-name-max-length": "页面名称长度应小于 256",
+        "configuration-step": {
+            "configure-app-settings-title": "配置应用设置",
+            "configure-app-settings-text": "下载配置文件，并放入上一步克隆项目的根目录。",
+            "download-file": "下载文件"
+        },
         "add-application": "添加应用",
         "app-id": "应用ID",
         "app-id-required": "应用ID必填",
@@ -3792,6 +3968,9 @@
         "configuration-dialog": "配置对话框",
         "configuration-app": "配置应用程序",
         "configuration-step": {
+            "download-file": "下载文件",
+            "configure-app-settings-text": "下载配置文件，并放入上一步克隆项目的根目录。",
+            "configure-app-settings-title": "配置应用设置",
             "prepare-environment-title": "准备开发环境",
             "prepare-environment-text": "Flutter ThingsBoard 移动应用程序需要 Flutter SDK。按照说明设置 Flutter SDK。",
             "get-source-code-title": "获取应用程序源代码",
@@ -3810,6 +3989,18 @@
         }
     },
     "notification": {
+        "resources-shortage-trigger-settings": "资源不足触发设置",
+        "cpu-threshold": "CPU 阈值",
+        "link-max-length": "链接长度应小于或等于 {{ length }} 个字符",
+        "create-new-template": "新建一个！",
+        "ram-threshold": "内存阈值",
+        "storage-threshold": "存储阈值",
+        "template-type": {
+            "resources-shortage": "资源不足"
+        },
+        "trigger": {
+            "resources-shortage": "资源不足"
+        },
         "action-button": "操作按钮",
         "action-type": "操作类型",
         "active": "活动",
@@ -4031,6 +4222,7 @@
         "template-name": "模板名称",
         "template-required": "模板必填。",
         "template-type": {
+            "resources-shortage": "资源不足",
             "alarm": "告警",
             "alarm-assignment": "告警分配",
             "alarm-comment": "告警评论",
@@ -4056,6 +4248,7 @@
         "time": "时间",
         "track-rule-node-events": "追踪规则节点事件",
         "trigger": {
+            "resources-shortage": "资源不足",
             "alarm": "告警",
             "alarm-assignment": "告警分配",
             "alarm-comment": "告警评论",
@@ -4098,6 +4291,7 @@
         }
     },
     "ota-update": {
+        "change-ota-setting-title": "确定要修改 OTA 设置吗？",
         "add": "添加包",
         "assign-firmware": "分配的固件",
         "assign-firmware-required": "分配的固件必填",
@@ -4264,6 +4458,7 @@
         }
     },
     "relation": {
+        "relation-filter": "关系筛选器",
         "relations": "关联",
         "direction": "方向",
         "clear-relation-type": "清除关系类型",
@@ -4311,6 +4506,14 @@
         "not": "不是"
     },
     "resource": {
+        "type": {
+            "general": "常规"
+        },
+        "resource-is-in-use": "资源正被其他实体使用",
+        "resources-are-in-use": "资源正被其他实体使用",
+        "resource-is-in-use-text": "资源 <b>{{title}}</b> 未删除，因为以下实体正在使用它：",
+        "resources-are-in-use-text": "部分资源未删除，因为它们正被其他实体使用。</br>可点击对应资源行的 <b>引用</b> 按钮查看被引用的实体。</br>如仍要删除这些资源，请在下方表格中勾选后点击 <b>删除所选</b>。",
+        "delete-resource-in-use-text": "如仍要删除该资源，请点击 <b>仍然删除</b>。",
         "add": "添加资源",
         "all-types": "全部",
         "copyId": "复制资源ID",
@@ -4342,6 +4545,7 @@
         "title-required": "标题是必填项。",
         "title-max-length": "标题长度应该小于256个字符。",
         "type": {
+            "general": "常规",
             "jks": "JKS",
             "js-module": "JS 模块",
             "lwm2m-model": "LWM2M 模型",
@@ -4356,6 +4560,11 @@
         }
     },
     "javascript": {
+        "delete-javascript-resource-in-use-text": "如仍要删除该 JavaScript 资源，请点击 <b>仍然删除</b>。",
+        "javascript-resource-is-in-use": "JavaScript 资源正被其他实体使用",
+        "javascript-resources-are-in-use": "JavaScript 资源正被其他实体使用",
+        "javascript-resource-is-in-use-text": "JavaScript 资源 <b>{{title}}</b> 未删除，因为以下实体正在使用它：",
+        "javascript-resources-are-in-use-text": "部分 JavaScript 资源未删除，因为它们正被其他实体使用。</br>可点击对应资源行的 <b>引用</b> 按钮查看被引用的实体。</br>如仍要删除这些 JavaScript 资源，请在下方表格中勾选后点击 <b>删除所选</b>。",
         "add": "添加JavaScript资源",
         "delete": "删除JavaScript资源",
         "delete-javascript-resource-text": "请注意：确认后该JavaScript资源将不可恢复。",
@@ -4679,6 +4888,36 @@
         "isolated-tb-rule-engine-details": "每个独立区域需要单独的规则引擎微服务"
     },
     "tenant-profile": {
+        "calculated-fields": "计算字段",
+        "max-calculated-fields": "每个实体的计算字段最大数量",
+        "max-calculated-fields-range": "每个实体的计算字段最大数量不能为负数",
+        "max-calculated-fields-required": "每个实体的计算字段最大数量不能为空",
+        "max-data-points-per-rolling-arg": "滚动参数内的最大数据点数",
+        "max-data-points-per-rolling-arg-range": "滚动参数内的最大数据点数不能为负数",
+        "max-data-points-per-rolling-arg-required": "滚动参数内的最大数据点数不能为空",
+        "max-arguments-per-cf": "单个计算字段的参数最大数量",
+        "max-arguments-per-cf-range": "单个计算字段的参数最大数量不能为负数",
+        "max-arguments-per-cf-required": "单个计算字段的参数最大数量不能为空",
+        "max-state-size": "状态最大大小（KB）",
+        "max-state-size-range": "状态最大大小（KB）不能为负数",
+        "max-state-size-required": "状态最大大小（KB）不能为空",
+        "max-value-argument-size": "单值参数最大大小（KB）",
+        "max-value-argument-size-range": "单值参数最大大小（KB）不能为负数",
+        "max-value-argument-size-required": "单值参数最大大小（KB）不能为空",
+        "cassandra-write-tenant-core-limits-configuration": "Rest API Cassandra 写查询",
+        "cassandra-read-tenant-core-limits-configuration": "Rest API 与 WS 遥测 Cassandra 读查询",
+        "cassandra-write-tenant-rule-engine-limits-configuration": "规则引擎遥测 Cassandra 写查询",
+        "cassandra-read-tenant-rule-engine-limits-configuration": "规则引擎遥测 Cassandra 读查询",
+        "rate-limits": {
+            "and-also-less-than": "且同时小于",
+            "calculated-field-debug-event-rate-limit": "计算字段调试事件",
+            "edit-calculated-field-debug-event-rate-limit": "编辑计算字段调试事件速率限制",
+            "edit-cassandra-write-tenant-core-limits-configuration": "编辑 Rest API Cassandra 写查询",
+            "edit-cassandra-read-tenant-core-limits-configuration": "编辑 Rest API 与 WS 遥测 Cassandra 读查询",
+            "edit-cassandra-write-tenant-rule-engine-limits-configuration": "编辑规则引擎遥测 Cassandra 写查询",
+            "edit-cassandra-read-tenant-rule-engine-limits-configuration": "编辑规则引擎遥测 Cassandra 读查询",
+            "per-seconds-duplicate": "重复的时间速率，每个时间区间必须唯一。"
+        },
         "tenant-profile": "区域配置",
         "tenant-profiles": "区域配置",
         "add": "添加区域配置",
@@ -4839,6 +5078,14 @@
         "ws-limit-max-subscriptions-per-public-user": "公共用户最大订阅数",
         "ws-limit-updates-per-session": "会话WS更新",
         "rate-limits": {
+            "per-seconds-duplicate": "重复的时间速率，每个时间区间必须唯一。",
+            "edit-cassandra-read-tenant-rule-engine-limits-configuration": "编辑规则引擎遥测 Cassandra 读查询",
+            "edit-cassandra-write-tenant-rule-engine-limits-configuration": "编辑规则引擎遥测 Cassandra 写查询",
+            "edit-cassandra-read-tenant-core-limits-configuration": "编辑 Rest API 与 WS 遥测 Cassandra 读查询",
+            "edit-cassandra-write-tenant-core-limits-configuration": "编辑 Rest API Cassandra 写查询",
+            "edit-calculated-field-debug-event-rate-limit": "编辑计算字段调试事件速率限制",
+            "calculated-field-debug-event-rate-limit": "计算字段调试事件",
+            "and-also-less-than": "且同时小于",
             "add-limit": "添加限制",
             "advanced-settings": "高级设置",
             "edit-limit": "编辑限制",
@@ -5019,6 +5266,8 @@
         "all": "全部"
     },
     "tooltip": {
+        "hide-zero-tooltip-values": "隐藏零值",
+        "show-stack-total": "堆叠模式下显示合计值",
         "trigger": "触发",
         "trigger-point": "点",
         "trigger-axis": "轴",
@@ -5031,6 +5280,158 @@
         "background-blur": "背景模糊"
     },
     "unit": {
+        "set-unit-conversion": "设置单位换算",
+        "unit-settings": {
+            "unit-settings": "单位设置",
+            "source-unit": "源单位",
+            "source-unit-hint": "这是存储值的单位，即换算的起始单位。请填写源数据使用的符号（如 m、km、ft、in）。",
+            "target-metric-unit": "目标公制单位",
+            "target-metric-unit-hint": "选择源值要换算成的公制（SI）单位（如 cm、mm、km）。",
+            "target-imperial-unit": "目标英制单位",
+            "target-imperial-unit-hint": "选择源值要换算成的英制单位（如 in、ft、yd）。",
+            "target-hybrid-unit": "目标混合单位",
+            "target-hybrid-unit-hint": "选择源值要换算成的混合单位（如 cm、in、km）。混合单位兼具公制与英制单位。",
+            "enable-unit-conversion": "启用单位换算",
+            "enable-unit-conversion-hint": "开启后执行换算；关闭时源值原样输出。对应计量组下仅有一个单位时不可启用（如光通量、空气质量指数）。"
+        },
+        "unit-system": "单位制",
+        "unit-system-type": {
+            "AUTO": "自动",
+            "METRIC": "公制",
+            "IMPERIAL": "英制",
+            "HYBRID": "混合"
+        },
+        "measures": {
+            "absorbed-dose-rate": "吸收剂量率",
+            "acceleration": "加速度",
+            "acidity": "酸度",
+            "air-quality-index": "空气质量指数",
+            "amount-of-substance": "物质的量",
+            "angle": "角度",
+            "angular-acceleration": "角加速度",
+            "area": "面积",
+            "area-density": "面密度",
+            "capacitance": "电容",
+            "catalytic-activity": "催化活性",
+            "catalytic-concentration": "催化浓度",
+            "charge": "电荷量",
+            "current-density": "电流密度",
+            "data-transfer-rate": "数据传输速率",
+            "density": "密度",
+            "digital": "数字量",
+            "dimension-ratio": "尺寸比",
+            "dynamic-viscosity": "动力粘度",
+            "earthquake-magnitude": "震级",
+            "electric-charge-density": "电荷密度",
+            "electric-current": "电流",
+            "electric-dipole-moment": "电偶极矩",
+            "electric-field-strength": "电场强度",
+            "electric-flux": "电通量",
+            "electric-permittivity": "介电常数",
+            "electric-polarizability": "电极化率",
+            "electrical-conductance": "电导",
+            "electrical-conductivity": "电导率",
+            "energy": "能量",
+            "energy-density": "能量密度",
+            "force": "力",
+            "frequency": "频率",
+            "fuel-efficiency": "燃油效率",
+            "heat-capacity": "热容",
+            "illuminance": "照度",
+            "inductance": "电感",
+            "kinematic-viscosity": "运动粘度",
+            "length": "长度",
+            "light-exposure": "曝光量",
+            "linear-charge-density": "线电荷密度",
+            "logarithmic-ratio": "对数比",
+            "luminous-efficacy": "发光效能",
+            "luminous-flux": "光通量",
+            "luminous-intensity": "发光强度",
+            "magnetic-field-gradient": "磁场梯度",
+            "magnetic-flux": "磁通量",
+            "magnetic-flux-density": "磁通密度",
+            "magnetic-moment": "磁矩",
+            "magnetic-permeability": "磁导率",
+            "mass": "质量",
+            "mass-fraction": "质量分数",
+            "molar-concentration": "摩尔浓度",
+            "molar-energy": "摩尔能量",
+            "molar-heat-capacity": "摩尔热容",
+            "molar-mass": "摩尔质量",
+            "number-concentration": "数量浓度",
+            "parts-per-million": "百万分率",
+            "power": "功率",
+            "power-density": "功率密度",
+            "pressure": "压力",
+            "radiance": "辐射亮度",
+            "radiant-intensity": "辐射强度",
+            "radiation-dose": "辐射剂量",
+            "radioactive-decay": "放射性衰变",
+            "radioactivity": "放射性活度",
+            "radioactivity-concentration": "放射性浓度",
+            "reciprocal-length": "长度倒数",
+            "resistance": "电阻",
+            "reynolds-number": "雷诺数",
+            "signal-level": "信号电平",
+            "solid-angle": "立体角",
+            "specific-energy": "比能",
+            "specific-heat-capacity": "比热容",
+            "specific-humidity": "比湿",
+            "specific-volume": "比容",
+            "speed": "速度",
+            "surface-charge-density": "表面电荷密度",
+            "surface-tension": "表面张力",
+            "temperature": "温度",
+            "thermal-conductivity": "导热系数",
+            "time": "时间",
+            "torque": "转矩",
+            "turbidity": "浊度",
+            "voltage": "电压",
+            "volume": "体积",
+            "volume-flow": "体积流量"
+        },
+        "decimeter": "分米",
+        "foot-us": "英尺（美国测量）",
+        "fluid-ounce-per-second": "液量盎司/秒",
+        "foot-per-minute": "英尺/分",
+        "inch-per-second": "英寸/秒",
+        "inch-per-hour": "英寸/时",
+        "meter-per-minute": "米/分",
+        "kilopound-per-square-inch": "千磅/平方英寸",
+        "watt-minute": "瓦·分",
+        "milliwatt-hour": "毫瓦·时",
+        "megawatt-hour": "兆瓦·时",
+        "gigawatt-hour": "吉瓦·时",
+        "thousand-british-thermal-unit": "千英热单位",
+        "million-british-thermal-unit": "百万英热单位",
+        "btu-per-second": "英热单位/秒",
+        "btu-per-day": "英热单位/日",
+        "mbtu-per-hour": "千英热单位/时",
+        "mbtu-per-second": "千英热单位/秒",
+        "mbtu-per-day": "千英热单位/日",
+        "mmbtu-per-hour": "百万英热单位/时",
+        "mmbtu-per-second": "百万英热单位/秒",
+        "mmbtu-per-day": "百万英热单位/日",
+        "foot-pound-per-second": "英尺·磅/秒",
+        "nanocoulomb": "纳库仑",
+        "kiloampere": "千安",
+        "megaampere": "兆安",
+        "gigaampere": "吉安",
+        "millivolt": "毫伏",
+        "microvolt": "微伏",
+        "kilovolt": "千伏",
+        "megavolt": "兆伏",
+        "millihertz": "毫赫兹",
+        "terahertz": "太赫兹",
+        "nanosecond": "纳秒",
+        "microsecond": "微秒",
+        "millisecond": "毫秒",
+        "cubic-decimeter-per-second": "立方分米/秒",
+        "arcminute": "角分",
+        "arcsecond": "角秒",
+        "milliradian": "毫弧度",
+        "rotation-per-minute": "转/分",
+        "paris-inch": "巴黎寸",
         "millimeter": "毫米",
         "centimeter": "厘米",
         "angstrom": "埃米",
@@ -5526,6 +5927,8 @@
         "json-value-required": "JSON值必填。"
     },
     "version-control": {
+        "export-calculated-fields": "导出计算字段",
+        "load-calculated-fields": "加载计算字段",
         "version-control": "版本控制",
         "management": "版本控制管理",
         "search": "搜索版本",
@@ -5704,6 +6107,28 @@
         "reference": "引用"
     },
     "widget-action": {
+        "mobile": {
+            "device-provision": "设备配网"
+        },
+        "map-item-type": "地图元素类型",
+        "map-item": {
+            "marker": "标记",
+            "polygon": "多边形",
+            "rectangle": "矩形",
+            "circle": "圆形"
+        },
+        "place-map-item": "放置地图元素",
+        "map-item-tooltip": {
+            "customize-map-item-tooltips": "自定义地图元素提示",
+            "place-marker": "放置标记",
+            "start-draw-rectangle": "开始绘制矩形",
+            "finish-draw-rectangle": "结束绘制矩形",
+            "start-draw-polygon": "开始绘制多边形",
+            "continue-draw-polygon": "继续绘制多边形",
+            "finish-draw-polygon": "结束绘制多边形",
+            "start-draw-circle": "开始绘制圆形",
+            "finish-draw-circle": "结束绘制圆形"
+        },
         "header-button": "顶部按钮",
         "do-nothing": "无任何动作",
         "open-dashboard-state": "切换仪表板状态",
@@ -5754,6 +6179,7 @@
         "URL": "URL",
         "url-required": "URL必填。",
         "mobile": {
+            "device-provision": "设备配网",
             "action-type": "移动端动作类型",
             "select-action-type": "选择移动端操作类型",
             "action-type-required": "移动端动作类型必填。",
@@ -5809,6 +6235,23 @@
         "create-new": "创建新部件包"
     },
     "widget-config": {
+        "digits-suffix": "位",
+        "header-button": {
+            "button-settings": "按钮设置",
+            "button-type": "按钮类型",
+            "button-type-basic": "基础",
+            "button-type-raised": "凸起",
+            "button-type-stroked": "描边",
+            "button-type-flat": "扁平",
+            "button-type-icon": "图标",
+            "button-type-mini-fab": "浮动操作按钮（FAB）",
+            "colors": "颜色",
+            "color": "颜色",
+            "background": "背景",
+            "border": "边框",
+            "advanced-button-style": "高级按钮样式",
+            "button-style": "按钮样式"
+        },
         "data": "数据",
         "settings": "设置",
         "advanced": "高级",
@@ -7997,6 +8440,35 @@
         "items-per-page-separator": "至"
     },
     "language": {
+        "locales": {
+            "ar_AE": "العربية（阿联酋）",
+            "ca_ES": "català（西班牙）",
+            "cs_CZ": "čeština（捷克）",
+            "da_DK": "dansk（丹麦）",
+            "de_DE": "Deutsch（德国）",
+            "el_GR": "Ελληνικά（希腊）",
+            "en_US": "English（美国）",
+            "es_ES": "español（西班牙）",
+            "fa_IR": "فارسی（伊朗）",
+            "fr_FR": "français（法国）",
+            "it_IT": "italiano（意大利）",
+            "ja_JP": "日本語（日本）",
+            "ka_GE": "ქართული（格鲁吉亚）",
+            "ko_KR": "한국어（韩国）",
+            "lt_LT": "lietuvių（立陶宛）",
+            "lv_LV": "latviešu（拉脱维亚）",
+            "nl_BE": "Nederlands（比利时）",
+            "nl_NL": "Nederlands（荷兰）",
+            "no_NO": "norsk（挪威）",
+            "pl_PL": "polski（波兰）",
+            "pt_BR": "português（巴西）",
+            "ro_RO": "română（罗马尼亚）",
+            "sl_SI": "slovenščina（斯洛文尼亚）",
+            "tr_TR": "Türkçe（土耳其）",
+            "uk_UA": "українська（乌克兰）",
+            "zh_CN": "中文（中国）",
+            "zh_TW": "中文（中国台湾）"
+        },
         "language": "语言"
     }
 }
